@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Disc Golf Course Finder</title>
+  <link rel="stylesheet" href="./assets/course-finder.css">
+</head>
+<body>
+  <main>
+    <section
+      class="dgapi-course-finder"
+      aria-label="Disc golf courses in England"
+      data-api-base-url="https://io.discgolfapi.com/v1/courses"
+    >
+      <div class="cf-controls">
+        <div class="cf-search-wrap">
+          <span class="cf-search-icon" aria-hidden="true">&#8981;</span>
+          <input class="cf-search" id="dgapi-cf-search" type="search" placeholder="Search by name, town or postcode..." autocomplete="off" aria-label="Search courses by name, town or full or partial postcode">
+        </div>
+
+        <button class="cf-button" id="dgapi-cf-near-me" type="button">Use my location</button>
+
+        <select class="cf-select cf-area-select" id="dgapi-cf-area" aria-label="Course area">
+          <option value="england">England</option>
+          <option value="gb">England, Wales &amp; Scotland</option>
+        </select>
+
+        <select class="cf-select" id="dgapi-cf-sort" aria-label="Sort courses">
+          <option value="name">A-Z by name</option>
+          <option value="location">A-Z by location</option>
+          <option value="distance">Nearest first</option>
+        </select>
+
+        <span class="cf-count" id="dgapi-cf-count" aria-live="polite"></span>
+      </div>
+
+      <div id="dgapi-cf-status" class="cf-status" hidden></div>
+      <div id="dgapi-cf-list-wrap"></div>
+
+      <div class="cf-footer">
+        <span>Course data supplied by <a href="https://discgolfapi.com/" target="_blank" rel="noopener">DiscGolfAPI</a>.</span>
+        <span class="cf-disclaimer">Course details are provided as-is and may change. Please check with the course before travelling.</span>
+      </div>
+    </section>
+  </main>
+
+  <script src="./assets/course-finder.js"></script>
+</body>
+</html>

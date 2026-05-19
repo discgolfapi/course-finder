@@ -1,0 +1,59 @@
+{
+  "_comment": "Do not remove or alter source_url. DiscGolfAPI attribution is required.",
+  "year": 2026,
+  "programme": "Membership Course Badge",
+  "badge_label": "Course Badge Partner",
+  "badge_url": "/membership/membership-course-card/",
+  "country": "England",
+  "source_url": "https://discgolfapi.com/",
+  "courses": [
+    {
+      "id": "crs_box_end_park_disc_golf",
+      "badges": [
+        { "label": "Course Badge Partner" }
+      ]
+    },
+    {
+      "id": "crs_cotswold_view",
+      "badges": [
+        { "label": "Course Badge Partner" }
+      ]
+    },
+    {
+      "id": "crs_cricklade_house_hotel",
+      "badges": [
+        { "label": "Course Badge Partner" }
+      ]
+    },
+    {
+      "id": "crs_gilly_s",
+      "badges": [
+        { "label": "Course Badge Partner" }
+      ]
+    },
+    {
+      "slug": "hindleap-warren-disc-golf",
+      "badges": [
+        { "label": "Course Badge Partner" }
+      ]
+    },
+    {
+      "slug": "mendip-activity-centre-disc-golf",
+      "badges": [
+        { "label": "Course Badge Partner" }
+      ]
+    },
+    {
+      "id": "crs_quarry_park_disc_golf",
+      "badges": [
+        { "label": "Course Badge Partner" }
+      ]
+    },
+    {
+      "slug": "the-national-disc-golf-course",
+      "badges": [
+        { "label": "Course Badge Partner" }
+      ]
+    }
+  ]
+}
