@@ -4,6 +4,45 @@ Standalone HTML, CSS and JavaScript course finder powered by DiscGolfAPI.
 
 The finder loads live course data from DiscGolfAPI, supports configurable areas, GB and US-state presets, locality modes, pagination, optional course badges, weather forecasts, compact layouts, simple theming and visible DiscGolfAPI attribution.
 
+## Quick Start
+
+1. Serve this folder locally:
+
+```sh
+python3 -m http.server 8080
+```
+
+2. Open the demo:
+
+```text
+http://localhost:8080/
+```
+
+3. Open the configurator and choose the scope, locality, forecast length and visual options:
+
+```text
+http://localhost:8080/configurator.html
+```
+
+4. Copy the generated embed HTML into the target website.
+
+5. Upload these files with the page, keeping the relative paths used by the embed:
+
+```text
+assets/course-finder.css
+assets/course-finder.js
+assets/course-badges.json
+```
+
+6. Keep the visible DiscGolfAPI attribution and linked logo in the footer.
+
+For a manual embed, copy the full `.dgapi-course-finder` section from `index.html`, then include the CSS in the page `<head>` and the script before the closing `</body>` tag:
+
+```html
+<link rel="stylesheet" href="./assets/course-finder.css">
+<script src="./assets/course-finder.js"></script>
+```
+
 ## Files
 
 - `index.html` contains the required markup.
@@ -81,6 +120,14 @@ If both `data-area-options` and `data-preset` are present, `data-area-options` w
 Remote `data-badges-url` files must be served with browser-readable CORS headers.
 
 The weather layout automatically places forecast cards next to each other when space allows and wraps them onto new rows on narrower screens.
+
+## Deployment Checklist
+
+- Serve the page over `https://` if using browser location; geolocation requires a secure context on most browsers.
+- Host `assets/course-finder.css`, `assets/course-finder.js` and any local badge JSON where the embed paths can reach them.
+- If `data-badges-url` points at another domain, configure CORS on that JSON response.
+- Keep the DiscGolfAPI footer attribution visible.
+- Test the configured locality, preset and one weather panel before publishing.
 
 ## Embed Examples
 
