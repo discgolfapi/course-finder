@@ -102,8 +102,8 @@ Supported attributes:
 
 - `data-api-base-url`: DiscGolfAPI courses endpoint.
 - `data-preset`: built-in area preset. Supported values are `gb`, `england`, `scotland`, `wales`, `global` and `us-state`.
-- `data-country`: ISO country code for custom scopes, for example `US`, `GB`, `AU`.
-- `data-region`: region/state code for custom scopes. For US states, use values such as `OR`, `CA`, `TX`.
+- `data-country`: ISO 3166-1 alpha-2 country code for custom scopes, for example `US`, `GB`, `AU`, `CA`, `FI`, `SE`, `EE`.
+- `data-region`: country-specific region, state or subdivision code. For US states, use values such as `OR`, `CA`, `TX`. For GB nation-level filters, use the built-in `england`, `scotland` or `wales` presets unless you are providing a custom `data-area-options` setup.
 - `data-area-options`: JSON array of selectable areas. Each option needs `value`, `label` and `query`. It can also include `filterRegion` to client-filter the loaded API results by normalized region name, for example `Scotland` or `Wales`.
 - `data-area-default`: initial selected area value.
 - `data-default-query`: initial search query.
@@ -124,6 +124,43 @@ If both `data-area-options` and `data-preset` are present, `data-area-options` w
 Remote `data-badges-url` files must be served with browser-readable CORS headers.
 
 The weather layout automatically places forecast cards next to each other when space allows and wraps them onto new rows on narrower screens.
+
+## Country And Region Codes
+
+`data-country` uses two-letter ISO 3166-1 alpha-2 country codes. Common examples:
+
+| Country | Code |
+| --- | --- |
+| Great Britain / United Kingdom | `GB` |
+| United States | `US` |
+| Canada | `CA` |
+| Australia | `AU` |
+| Finland | `FI` |
+| Sweden | `SE` |
+| Estonia | `EE` |
+
+Reference: [ISO 3166 country codes](https://www.iso.org/iso-3166-country-codes.html).
+
+`data-region` is country-specific. It usually represents a subdivision within the selected country, similar to ISO 3166-2 subdivision codes, but the exact values depend on what DiscGolfAPI currently stores for that country.
+
+Useful examples:
+
+| Country | Region Type | Examples |
+| --- | --- | --- |
+| `US` | State code | `OR`, `CA`, `TX`, `NC` |
+| `GB` | Nation code | `ENG`, `WLS`, `SCT` |
+
+Reference: [ISO 3166-2 subdivision codes](https://www.iso.org/standard/72483.html).
+
+For most embeds, prefer the configurator or built-in presets rather than hand-writing region codes. Region codes are not globally interchangeable: `CA` means California when `data-country="US"`, but Canada when used as a country code. For GB, `england`, `scotland` and `wales` presets are safer than direct region queries because some GB records are inferred client-side from locality and coordinates.
+
+For countries not listed above, start with a country-only embed:
+
+```html
+<section class="dgapi-course-finder" data-country="FI" data-page-size="20"></section>
+```
+
+Then add a region only after confirming the relevant DiscGolfAPI `region_code` values for that country.
 
 ## Deployment Checklist
 
