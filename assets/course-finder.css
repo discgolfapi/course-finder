@@ -1,7 +1,24 @@
+:root {
+  color-scheme: light;
+  --bg: #fafbfd;
+  --surface: #ffffff;
+  --surface-muted: #f5f9fc;
+  --surface-strong: #e9f2fb;
+  --text: #3a4f66;
+  --heading: #111827;
+  --muted: #9ca3af;
+  --border: #d7e5f1;
+  --primary: #1e73be;
+  --primary-strong: #155a8f;
+  --accent: #e7f1fb;
+  --danger: #c0392b;
+  --danger-muted: #f4e3e1;
+}
+
 body {
   margin: 0;
-  background: #f4f6f5;
-  color: #333;
+  background: var(--bg);
+  color: var(--text);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -16,10 +33,24 @@ main {
 }
 
 .dgapi-course-finder {
+  --bg: #fafbfd;
+  --surface: #ffffff;
+  --surface-muted: #f5f9fc;
+  --surface-strong: #e9f2fb;
+  --text: #3a4f66;
+  --heading: #111827;
+  --muted: #9ca3af;
+  --border: #d7e5f1;
+  --primary: #1e73be;
+  --primary-strong: #155a8f;
+  --accent: #e7f1fb;
+  --danger: #c0392b;
+  --danger-muted: #f4e3e1;
+  --dgapi-control-radius: 8px;
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  color: #333;
+  color: var(--text);
   font-family: inherit;
   font-size: 15px;
   line-height: 1.6;
@@ -43,7 +74,7 @@ main {
   position: absolute;
   top: 50%;
   left: 10px;
-  color: #2a3d45;
+  color: var(--primary);
   font-size: 14px;
   line-height: 1;
   transform: translateY(-50%);
@@ -53,22 +84,21 @@ main {
 .dgapi-course-finder .cf-search,
 .dgapi-course-finder .cf-select {
   min-height: 40px;
-  border: 1.5px solid #ccc;
-  border-radius: 3px;
-  background-color: #fff;
-  color: #333;
+  border: 1.5px solid var(--border);
+  border-radius: var(--dgapi-control-radius);
+  background-color: var(--surface);
+  color: var(--text);
   font: inherit;
   font-size: 15px;
   outline: none;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .dgapi-course-finder .cf-search {
   width: 100%;
-  padding: 9px 11px 9px 34px;
-  border: 2px solid #2a3d45;
-  background: #f5faf9;
-  box-shadow: 0 1px 0 rgba(42, 61, 69, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+  padding: 11px 12px 11px 34px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
 }
 
 .dgapi-course-finder .cf-select {
@@ -89,12 +119,12 @@ main {
 
 .dgapi-course-finder .cf-search:focus,
 .dgapi-course-finder .cf-select:focus {
-  border-color: #2a3d45;
+  border-color: var(--primary);
 }
 
 .dgapi-course-finder .cf-search:focus {
   background: #fff;
-  box-shadow: 0 0 0 3px rgba(42, 61, 69, 0.18), 0 2px 8px rgba(42, 61, 69, 0.08);
+  box-shadow: 0 0 0 3px rgba(30, 115, 190, 0.18), 0 2px 8px rgba(30, 115, 190, 0.08);
 }
 
 .dgapi-course-finder .cf-count {
@@ -104,41 +134,86 @@ main {
   white-space: nowrap;
 }
 
+.dgapi-course-finder .cf-pagination {
+  padding: 12px 0 0;
+}
+
+.dgapi-course-finder .cf-pagination-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.dgapi-course-finder .cf-pagination-button {
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1.5px solid var(--primary);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--primary);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.dgapi-course-finder .cf-pagination-button:hover:not(:disabled),
+.dgapi-course-finder .cf-pagination-button:focus-visible {
+  background: var(--primary);
+  color: #fff;
+}
+
+.dgapi-course-finder .cf-pagination-button:disabled {
+  border-color: var(--border);
+  background: var(--surface-muted);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.dgapi-course-finder .cf-pagination-info {
+  white-space: nowrap;
+}
+
 .dgapi-course-finder .cf-button {
   flex: 0 0 auto;
-  min-height: 38px;
-  padding: 7px 12px;
-  border: 1.5px solid #2a3d45;
-  border-radius: 3px;
-  background: #fff;
-  color: #2a3d45;
+  min-height: 40px;
+  padding: 10px 16px;
+  border: 1.5px solid var(--primary);
+  border-radius: var(--dgapi-control-radius);
+  background: var(--primary);
+  color: #fff;
   font: inherit;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.2;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .dgapi-course-finder .cf-button:hover,
 .dgapi-course-finder .cf-button:focus-visible {
-  background: #2a3d45;
+  background: var(--primary-strong);
+  border-color: var(--primary-strong);
+  box-shadow: 0 10px 24px rgba(30, 115, 190, 0.12);
   color: #fff;
 }
 
 .dgapi-course-finder .cf-button:disabled {
-  border-color: #ccc;
-  background: #eee;
-  color: #777;
+  border-color: var(--border);
+  background: var(--surface-muted);
+  color: var(--muted);
   cursor: wait;
 }
 
 .dgapi-course-finder .cf-list,
 .dgapi-course-finder .cf-loading {
   overflow: hidden;
-  border: 1.5px solid #ddd;
-  border-radius: 3px;
-  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
 }
 
 .dgapi-course-finder .cf-row {
@@ -146,10 +221,10 @@ main {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
   align-items: center;
-  padding: 13px 16px;
-  border-bottom: 1px solid #eee;
-  background: #fff;
-  transition: background-color 0.1s ease;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  transition: background-color 0.14s ease;
 }
 
 .dgapi-course-finder .cf-row:last-child {
@@ -157,14 +232,14 @@ main {
 }
 
 .dgapi-course-finder .cf-row:hover {
-  background: #f8fafa;
+  background: var(--surface-muted);
 }
 
 .dgapi-course-finder .cf-name {
   overflow: hidden;
-  margin: 0 0 2px;
-  color: #1a1a1a;
-  font-size: 15px;
+  margin: 0 0 4px;
+  color: var(--heading);
+  font-size: 16px;
   font-weight: 700;
   line-height: 1.35;
   text-overflow: ellipsis;
@@ -176,7 +251,7 @@ main {
   flex-wrap: wrap;
   gap: 0 10px;
   align-items: center;
-  color: #666;
+  color: var(--muted);
   font-size: 13px;
   line-height: 1.45;
 }
@@ -192,11 +267,11 @@ main {
   display: inline-flex;
   align-items: center;
   width: fit-content;
-  padding: 3px 7px;
-  border: 1px solid #2a3d45;
-  border-radius: 3px;
-  background: #eef4f3;
-  color: #2a3d45;
+  padding: 5px 10px;
+  border: 1px solid var(--primary);
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--primary);
   font-size: 12px;
   font-weight: 700;
   line-height: 1.2;
@@ -205,7 +280,7 @@ main {
 
 .dgapi-course-finder .cf-badge:hover,
 .dgapi-course-finder .cf-badge:focus-visible {
-  background: #2a3d45;
+  background: var(--primary-strong);
   color: #fff;
 }
 
@@ -223,39 +298,41 @@ main {
 
 .dgapi-course-finder .cf-link {
   display: inline-flex;
-  gap: 4px;
+  gap: 6px;
   align-items: center;
   justify-content: center;
-  min-height: 31px;
-  padding: 5px 10px;
-  border: 1.5px solid #c0392b;
-  border-radius: 3px;
-  background: #fff;
-  color: #c0392b;
+  min-height: 34px;
+  padding: 9px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--dgapi-control-radius);
+  background: var(--surface);
+  color: var(--heading);
   font: inherit;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.2;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .dgapi-course-finder .cf-link:hover,
 .dgapi-course-finder .cf-link:focus-visible {
-  background: #c0392b;
+  background: var(--primary);
+  border-color: var(--primary);
   color: #fff;
 }
 
 .dgapi-course-finder .cf-link.secondary {
-  border-color: #2a3d45;
-  color: #2a3d45;
+  border-color: var(--text);
+  color: var(--text);
 }
 
 .dgapi-course-finder .cf-link.secondary:hover,
 .dgapi-course-finder .cf-link.secondary:focus-visible {
-  background: #2a3d45;
+  background: var(--primary);
+  border-color: var(--primary);
   color: #fff;
 }
 
@@ -269,37 +346,38 @@ main {
 }
 
 .dgapi-course-finder .cf-weather-panel.open {
-  max-height: 980px;
+  max-height: none;
   margin-top: 2px;
+  overflow: visible;
   opacity: 1;
   transform: translateY(0);
 }
 
 .dgapi-course-finder .cf-weather-inner {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 12px;
   padding: 14px 0 2px;
-  border-top: 1px solid #eee;
-  background: linear-gradient(180deg, #fbfbfa 0%, #ffffff 100%);
+  border-top: 1px solid var(--border);
+  background: linear-gradient(180deg, #f9fbfd 0%, #ffffff 100%);
 }
 
 .dgapi-course-finder .cf-weather-card {
   overflow: hidden;
-  border: 1.5px solid #d7d7d7;
-  border-radius: 7px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
   background: #fff;
-  box-shadow: 0 8px 22px rgba(42, 61, 69, 0.08);
+  box-shadow: 0 8px 22px rgba(30, 115, 190, 0.08);
 }
 
 .dgapi-course-finder .cf-weather-header {
-  padding: 10px 16px;
-  background: #2a3d45;
+  padding: 12px 16px;
+  background: var(--primary);
 }
 
 .dgapi-course-finder .cf-weather-day {
   margin: 0;
-  color: rgba(255, 255, 255, 0.94);
+  color: #fff;
   font-size: 14px;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -312,11 +390,11 @@ main {
 
 .dgapi-course-finder .cf-weather-tip {
   margin: 0 0 16px;
-  padding: 9px 11px;
-  border-left: 4px solid #c0392b;
-  border-radius: 0 3px 3px 0;
-  background: #fff8ed;
-  color: #6f4300;
+  padding: 12px 14px;
+  border-left: 4px solid var(--primary);
+  border-radius: 0 6px 6px 0;
+  background: var(--accent);
+  color: var(--text);
   font-size: 14px;
   font-weight: 600;
   line-height: 1.35;
@@ -353,8 +431,8 @@ main {
 .dgapi-course-finder .cf-weather-condition {
   margin: 0 0 16px;
   padding-bottom: 16px;
-  border-bottom: 1px solid #ececec;
-  color: #404040;
+  border-bottom: 1px solid var(--border);
+  color: var(--heading);
   font-size: 18px;
   font-weight: 800;
   line-height: 1.25;
@@ -362,7 +440,7 @@ main {
 
 .dgapi-course-finder .cf-weather-stat-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr));
   gap: 10px 12px;
 }
 
@@ -372,8 +450,8 @@ main {
   align-items: flex-start;
   min-height: 82px;
   padding: 12px;
-  border-radius: 5px;
-  background: #f7f8f8;
+  border-radius: 8px;
+  background: var(--surface-muted);
 }
 
 .dgapi-course-finder .cf-weather-stat-icon {
@@ -384,6 +462,7 @@ main {
 }
 
 .dgapi-course-finder .cf-weather-stat-value {
+  overflow-wrap: anywhere;
   color: #1a1a1a;
   font-size: 18px;
   font-weight: 800;
@@ -392,7 +471,7 @@ main {
 
 .dgapi-course-finder .cf-weather-stat-label {
   margin-top: 4px;
-  color: #808080;
+  color: var(--muted);
   font-size: 14px;
   font-weight: 700;
   line-height: 1.16;
@@ -400,26 +479,39 @@ main {
 
 .dgapi-course-finder .cf-weather-wind-arrow {
   display: inline-block;
-  color: #2a3d45;
+  color: var(--primary-strong);
   font-weight: 900;
   line-height: 1;
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
 }
+
+.dgapi-course-finder .cf-wind-direction-0 { transform: rotate(0deg); }
+.dgapi-course-finder .cf-wind-direction-1 { transform: rotate(45deg); }
+.dgapi-course-finder .cf-wind-direction-2 { transform: rotate(90deg); }
+.dgapi-course-finder .cf-wind-direction-3 { transform: rotate(135deg); }
+.dgapi-course-finder .cf-wind-direction-4 { transform: rotate(180deg); }
+.dgapi-course-finder .cf-wind-direction-5 { transform: rotate(225deg); }
+.dgapi-course-finder .cf-wind-direction-6 { transform: rotate(270deg); }
+.dgapi-course-finder .cf-wind-direction-7 { transform: rotate(315deg); }
 .dgapi-course-finder .cf-weather-empty,
 .dgapi-course-finder .cf-empty,
 .dgapi-course-finder .cf-status {
   padding: 34px 20px;
-  border: 1.5px solid #ddd;
-  border-radius: 3px;
-  background: #fafafa;
-  color: #777;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface-muted);
+  color: var(--muted);
   font-size: 14px;
   text-align: center;
 }
 
 .dgapi-course-finder .cf-status {
   margin-bottom: 10px;
-  padding: 10px 12px;
-  color: #666;
+  padding: 12px 14px;
+  color: var(--text);
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
   text-align: left;
 }
 .dgapi-course-finder .cf-loading-head {
@@ -427,27 +519,27 @@ main {
   gap: 10px;
   align-items: center;
   padding: 13px 16px;
-  border-bottom: 1px solid #eee;
-  color: #666;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
   font-size: 14px;
 }
 .dgapi-course-finder .cf-spinner {
   width: 16px;
   height: 16px;
   border: 2px solid #d8d8d8;
-  border-top-color: #2a3d45;
+  border-top-color: var(--primary);
   border-radius: 50%;
   animation: dgapi-cf-spin 0.8s linear infinite;
   flex: 0 0 auto;
 }
 .dgapi-course-finder .cf-skeleton-row {
   padding: 13px 16px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border);
 }
 .dgapi-course-finder .cf-skeleton-line {
   height: 12px;
   border-radius: 3px;
-  background: linear-gradient(90deg, #eeeeee 0%, #f7f7f7 45%, #eeeeee 90%);
+  background: linear-gradient(90deg, #eef3f8 0%, #f7fafc 45%, #eef3f8 90%);
   background-size: 220% 100%;
   animation: dgapi-cf-shimmer 1.3s ease-in-out infinite;
 }
@@ -464,20 +556,86 @@ main {
 .dgapi-course-finder .cf-footer {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 12px;
+  gap: 8px 12px;
   justify-content: space-between;
+  align-items: center;
   margin-top: 10px;
-  color: #777;
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--surface-muted);
+  color: var(--muted);
   font-size: 12px;
   line-height: 1.45;
 }
 .dgapi-course-finder .cf-disclaimer {
   width: 100%;
 }
-.dgapi-course-finder .cf-footer a {
-  color: #555;
+.dgapi-course-finder .cf-footer-brand {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  color: var(--heading);
+  font-weight: 700;
+  text-decoration: none;
+}
+.dgapi-course-finder .cf-footer-brand:hover,
+.dgapi-course-finder .cf-footer-brand:focus-visible {
   text-decoration: underline;
   text-underline-offset: 2px;
+}
+.dgapi-course-finder .cf-footer-logo {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border-radius: 6px;
+  object-fit: contain;
+}
+.dgapi-course-finder .cf-footer a:not(.cf-footer-brand) {
+  color: var(--heading);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.dgapi-course-finder.cf-compact {
+  font-size: 14px;
+}
+
+.dgapi-course-finder.cf-compact .cf-controls {
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.dgapi-course-finder.cf-compact .cf-search,
+.dgapi-course-finder.cf-compact .cf-select,
+.dgapi-course-finder.cf-compact .cf-button {
+  min-height: 36px;
+  font-size: 13px;
+}
+
+.dgapi-course-finder.cf-compact .cf-row {
+  padding: 12px 14px;
+}
+
+.dgapi-course-finder.cf-compact .cf-name {
+  font-size: 15px;
+}
+
+.dgapi-course-finder.cf-compact .cf-link {
+  min-height: 31px;
+  padding: 7px 10px;
+}
+
+.dgapi-course-finder.cf-compact .cf-weather-inner {
+  grid-template-columns: 1fr;
+}
+
+.dgapi-course-finder.cf-compact .cf-weather-body {
+  padding: 14px 12px 12px;
+}
+
+.dgapi-course-finder.cf-compact .cf-weather-stat-grid {
+  grid-template-columns: 1fr;
 }
 
 .dgapi-directions-modal[hidden] {
@@ -496,23 +654,23 @@ main {
   width: min(100%, 420px);
   margin: 10vh auto 0;
   padding: 22px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 16px;
   background: #fff;
-  color: #1f2937;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.28);
+  color: var(--text);
+  box-shadow: 0 25px 60px rgba(17, 24, 39, 0.18);
 }
 
 .dgapi-directions-modal__title {
   margin: 0 0 8px;
-  color: #111827;
+  color: var(--heading);
   font-size: 1.25rem;
   line-height: 1.2;
 }
 
 .dgapi-directions-modal__subtitle {
   margin: 0 0 16px;
-  color: #4b5563;
+  color: var(--muted);
   font-size: 0.96rem;
   line-height: 1.5;
 }
@@ -527,10 +685,10 @@ main {
   display: block;
   width: 100%;
   padding: 14px 16px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(15, 23, 42, 0.12);
   border-radius: 12px;
-  background: #f8fafc;
-  color: #111827;
+  background: var(--surface-muted);
+  color: var(--text);
   font: inherit;
   font-weight: 700;
   line-height: 1.3;
@@ -543,15 +701,15 @@ main {
 .dgapi-directions-modal__option:focus-visible,
 .dgapi-directions-modal__close:hover,
 .dgapi-directions-modal__close:focus-visible {
-  background: #eef4f3;
-  color: #111827;
+  background: var(--surface-muted);
+  color: var(--text);
   text-decoration: none;
 }
 
 .dgapi-directions-modal__close {
   margin-top: 14px;
   background: #fff;
-  color: #2a3d45;
+  color: var(--primary);
 }
 
 .dgapi-directions-modal-open {
@@ -623,10 +781,6 @@ main {
     grid-template-columns: 1fr;
     gap: 16px;
     padding: 14px 0 6px;
-  }
-
-  .dgapi-course-finder .cf-weather-panel.open {
-    max-height: 2300px;
   }
 
   .dgapi-course-finder .cf-weather-main {

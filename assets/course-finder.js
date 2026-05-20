@@ -4,16 +4,170 @@
   function initDgapiCourseFinder() {
     const finderEl = document.querySelector(".dgapi-course-finder");
     const API_BASE_URL = (finderEl && finderEl.dataset.apiBaseUrl) || "https://io.discgolfapi.com/v1/courses";
-    const COURSE_BADGES_URL = SCRIPT_URL
+    const COURSE_BADGES_URL = (finderEl && tidyDataset(finderEl.dataset.badgesUrl)) || (SCRIPT_URL
       ? new URL("course-badges.json", SCRIPT_URL).href
-      : "./assets/course-badges.json";
+      : "./assets/course-badges.json");
     const DGAPI_SOURCE_URL = "https://discgolfapi.com/";
     const FALLBACK_COURSE_BADGES = {
       source_url: DGAPI_SOURCE_URL,
       badge_label: "Course Badge Partner",
       badge_url: "/membership/membership-course-card/",
-      courses: []
+      courses: [
+        {
+          id: "crs_box_end_park_disc_golf",
+          badges: [
+            { label: "Course Badge Partner" },
+            { label: "2026 Member Course", url: "/membership/membership-course-card/" }
+          ]
+        },
+        { id: "crs_cotswold_view", badges: [{ label: "Course Badge Partner" }] },
+        { id: "crs_cricklade_house_hotel", badges: [{ label: "Course Badge Partner" }] },
+        { id: "crs_gilly_s", badges: [{ label: "Course Badge Partner" }] },
+        { slug: "hindleap-warren-disc-golf", badges: [{ label: "Course Badge Partner" }] },
+        { slug: "mendip-activity-centre-disc-golf", badges: [{ label: "Course Badge Partner" }] },
+        { id: "crs_quarry_park_disc_golf", badges: [{ label: "Course Badge Partner" }] },
+        { slug: "the-national-disc-golf-course", badges: [{ label: "Course Badge Partner" }] }
+      ]
     };
+
+    function parseIntInRange(value, min, max, defaultValue) {
+      const number = Number(value);
+      if (!Number.isFinite(number) || number < min || number > max) {
+        return defaultValue;
+      }
+      return Math.round(number);
+    }
+
+    function parseAreaOptions(value) {
+      if (!value) {
+        return null;
+      }
+
+      try {
+        const parsed = JSON.parse(value);
+        if (Array.isArray(parsed) && parsed.length) {
+          return parsed.map(option => ({
+            value: String(option.value || "").trim(),
+            label: String(option.label || option.value || "").trim(),
+            query: String(option.query || "").trim()
+          })).filter(option => option.value && option.label);
+        }
+      } catch (error) {
+        return value.split("|").map(pair => {
+          const [valuePart, labelPart] = String(pair || "").split(":");
+          return {
+            value: String(valuePart || "").trim(),
+            label: String(labelPart || valuePart || "").trim(),
+            query: ""
+          };
+        }).filter(option => option.value && option.label);
+      }
+
+      return null;
+    }
+
+    function tidyDataset(value) {
+      return String(value || "").trim();
+    }
+
+    function isEnabled(value) {
+      return /^(1|true|yes|on)$/i.test(tidyDataset(value));
+    }
+
+    function buildQuery(params) {
+      return Object.entries(params)
+        .filter(([, value]) => tidyDataset(value))
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(tidyDataset(value))}`)
+        .join("&");
+    }
+
+    function buildAreaOptions() {
+      const configured = parseAreaOptions(finderEl && finderEl.dataset.areaOptions);
+      if (configured) {
+        return configured;
+      }
+
+      const preset = tidyDataset(finderEl && finderEl.dataset.preset).toLowerCase();
+      const country = tidyDataset(finderEl && finderEl.dataset.country).toUpperCase();
+      const region = tidyDataset((finderEl && (finderEl.dataset.region || finderEl.dataset.state)) || "").toUpperCase();
+      const limit = parseIntInRange(finderEl && finderEl.dataset.limit, 1, 1000, 500);
+
+      if (preset === "global" || country === "GLOBAL") {
+        return [{ value: "global", label: "Global", query: buildQuery({ limit }) }];
+      }
+
+      if (preset === "england") {
+        return [{ value: "england", label: "England", query: "country=GB&region=ENG&limit=200" }];
+      }
+
+      if (preset === "gb" || country === "GB") {
+        return [
+          { value: "england", label: "England", query: "country=GB&region=ENG&limit=200" },
+          { value: "gb", label: "England, Wales & Scotland", query: "country=GB&limit=500" }
+        ];
+      }
+
+      if (preset === "us-state" || (country === "US" && region)) {
+        return [{ value: `us-${region.toLowerCase()}`, label: `US ${region}`, query: buildQuery({ country: "US", region, limit }) }];
+      }
+
+      if (country) {
+        return [{ value: country.toLowerCase(), label: region ? `${country} ${region}` : country, query: buildQuery({ country, region, limit }) }];
+      }
+
+      return [
+        { value: "england", label: "England", query: "country=GB&region=ENG&limit=200" },
+        { value: "gb", label: "England, Wales & Scotland", query: "country=GB&limit=500" }
+      ];
+    }
+
+    function applyThemeOptions() {
+      if (!finderEl) {
+        return;
+      }
+
+      const themeValues = {
+        "--primary": finderEl.dataset.themePrimary,
+        "--primary-strong": finderEl.dataset.themePrimaryStrong,
+        "--accent": finderEl.dataset.themeAccent,
+        "--surface": finderEl.dataset.themeSurface,
+        "--surface-muted": finderEl.dataset.themeSurfaceMuted,
+        "--text": finderEl.dataset.themeText,
+        "--heading": finderEl.dataset.themeHeading,
+        "--border": finderEl.dataset.themeBorder
+      };
+
+      Object.entries(themeValues).forEach(([property, value]) => {
+        const clean = tidyDataset(value);
+        if (clean) {
+          finderEl.style.setProperty(property, clean);
+        }
+      });
+    }
+
+    function toIdentifiers(value) {
+      if (Array.isArray(value)) {
+        return value;
+      }
+      if (value == null) {
+        return [];
+      }
+      return String(value).split(",").map(item => item.trim()).filter(Boolean);
+    }
+
+    function itemIdentifiers(item) {
+      return []
+        .concat(toIdentifiers(item.id))
+        .concat(toIdentifiers(item.ids))
+        .concat(toIdentifiers(item.slug))
+        .concat(toIdentifiers(item.slugs))
+        .map(normaliseIdentifier)
+        .filter(Boolean);
+    }
+
+    function findAreaOption(value) {
+      return areaOptions.find(option => option.value === value) || areaOptions[0];
+    }
 
     let courses = [];
     let courseBadges = FALLBACK_COURSE_BADGES;
@@ -26,6 +180,20 @@
     let lastPostcodeLookup = "";
     let lastPlaceLookup = "";
     let openWeatherCourseId = "";
+    let currentPage = 1;
+
+    const areaOptions = buildAreaOptions();
+    const defaultAreaMode = (finderEl && String(finderEl.dataset.areaDefault || "").trim()) || areaOptions[0].value;
+    areaMode = defaultAreaMode;
+    const pageSize = parseIntInRange(finderEl && finderEl.dataset.pageSize, 1, 100, 0);
+    const forecastDays = parseIntInRange(finderEl && finderEl.dataset.forecastDays, 1, 7, 2);
+    const defaultQuery = tidyDataset(finderEl && finderEl.dataset.defaultQuery);
+    const locality = tidyDataset(finderEl && finderEl.dataset.locality);
+    const localityMode = tidyDataset(finderEl && finderEl.dataset.localityMode).toLowerCase();
+    const restrictToLocality = locality && localityMode === "restrict";
+    const websiteOnly = isEnabled(finderEl && finderEl.dataset.websiteOnly);
+    const autoNearby = isEnabled(finderEl && finderEl.dataset.autoNearby);
+    const compactLayout = isEnabled(finderEl && finderEl.dataset.compact) || tidyDataset(finderEl && finderEl.dataset.layout).toLowerCase() === "compact";
 
     const searchEl = document.getElementById("dgapi-cf-search");
     const areaEl = document.getElementById("dgapi-cf-area");
@@ -33,12 +201,24 @@
     const countEl = document.getElementById("dgapi-cf-count");
     const statusEl = document.getElementById("dgapi-cf-status");
     const listWrapEl = document.getElementById("dgapi-cf-list-wrap");
+    const pageControlsEl = document.getElementById("dgapi-cf-pagination");
     const nearMeEl = document.getElementById("dgapi-cf-near-me");
     const schemaId = "dgapi-course-finder-schema";
 
-    if (!searchEl || !areaEl || !sortEl || !countEl || !statusEl || !listWrapEl || !nearMeEl) {
+    if (!finderEl || !searchEl || !areaEl || !sortEl || !countEl || !statusEl || !listWrapEl || !nearMeEl) {
       return;
     }
+
+    applyThemeOptions();
+    finderEl.classList.toggle("cf-compact", compactLayout);
+
+    areaEl.innerHTML = areaOptions.map(option =>
+      `<option value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</option>`
+    ).join("");
+    areaMode = findAreaOption(areaMode).value;
+    areaEl.value = areaMode;
+    query = defaultQuery || locality;
+    searchEl.value = query;
 
     function tidy(value) {
       return String(value || "").trim();
@@ -147,16 +327,6 @@
       return tidy(value).toLowerCase();
     }
 
-    function itemIdentifiers(item) {
-      return []
-        .concat(item.id || [])
-        .concat(item.ids || [])
-        .concat(item.slug || [])
-        .concat(item.slugs || [])
-        .map(normaliseIdentifier)
-        .filter(Boolean);
-    }
-
     function matchedCourseBadges(course) {
       const courseIds = [course.id, course.slug]
         .map(normaliseIdentifier)
@@ -210,11 +380,20 @@
     }
 
     function apiUrlForArea() {
-      if (areaMode === "gb") {
-        return `${API_BASE_URL}?country=GB&limit=500`;
+      const option = findAreaOption(areaMode);
+      const query = option.query || (areaMode === "gb" ? "country=GB&limit=500" : "country=GB&region=ENG&limit=200");
+      if (!query) {
+        return API_BASE_URL;
       }
 
-      return `${API_BASE_URL}?country=GB&region=ENG&limit=200`;
+      if (/^https?:\/\//i.test(query)) {
+        return query;
+      }
+
+      const separator = API_BASE_URL.includes("?") ? "&" : "?";
+      return query.startsWith("?") || query.startsWith("&")
+        ? `${API_BASE_URL}${query}`
+        : `${API_BASE_URL}${separator}${query}`;
     }
 
     function toRadians(degrees) {
@@ -263,7 +442,7 @@
         `?latitude=${encodeURIComponent(course.lat)}` +
         `&longitude=${encodeURIComponent(course.lon)}` +
         `&daily=${daily}` +
-        "&timezone=Europe%2FLondon&forecast_days=2&wind_speed_unit=mph";
+        `&timezone=Europe%2FLondon&forecast_days=${forecastDays}&wind_speed_unit=mph`;
     }
 
     function weatherSummary(code) {
@@ -366,16 +545,24 @@
       return directions[Math.round(Number(degrees) / 45) % 8];
     }
 
+    function windDirectionClass(degrees) {
+      if (!Number.isFinite(Number(degrees))) {
+        return "";
+      }
+      const direction = Math.round(Number(degrees) / 45) % 8;
+      return `cf-wind-direction-${direction}`;
+    }
+
     function formatForecastDate(date, index) {
-      const label = index === 0 ? "Today" : "Tomorrow";
       const parsed = new Date(`${date}T12:00:00`);
       const formatted = new Intl.DateTimeFormat("en-GB", {
         weekday: "short",
         day: "numeric",
         month: "short"
       }).format(parsed);
+      const label = index === 0 ? "Today" : index === 1 ? "Tomorrow" : "";
 
-      return `${label} · ${formatted}`;
+      return label ? `${label} · ${formatted}` : formatted;
     }
 
     function formatTime(value) {
@@ -534,7 +721,7 @@
         return [];
       }
 
-      return daily.time.slice(0, 2).map((date, index) => ({
+      return daily.time.slice(0, forecastDays).map((date, index) => ({
         date,
         code: Number(daily.weather_code[index]),
         maxTemp: Number(daily.temperature_2m_max[index]),
@@ -571,7 +758,7 @@
           ${course.weatherDays.map((day, index) => {
             const summary = weatherSummary(day.code);
             const direction = compassDirection(day.windDirection);
-            const windArrow = `style="transform: rotate(${Number(day.windDirection) || 0}deg)"`;
+            const windArrowClass = windDirectionClass(day.windDirection);
             return `<div class="cf-weather-card" aria-label="${escapeHtml(formatForecastDate(day.date, index))}: ${escapeHtml(summary)}, high ${Math.round(day.maxTemp)} degrees Celsius, low ${Math.round(day.minTemp)} degrees Celsius">
               <div class="cf-weather-header">
                 <h3 class="cf-weather-day">${escapeHtml(formatForecastDate(day.date, index))}</h3>
@@ -589,7 +776,7 @@
                 <div class="cf-weather-stat-grid">
                   <div class="cf-weather-stat" aria-label="Wind speed ${Math.round(day.wind)} miles per hour ${escapeHtml(direction)}">
                     ${statIconSvg("wind")}
-                    <div><div class="cf-weather-stat-value"><span class="cf-weather-wind-arrow" ${windArrow}>↑</span> ${Math.round(day.wind)} mph ${escapeHtml(direction)}</div><div class="cf-weather-stat-label">Wind speed</div></div>
+                    <div><div class="cf-weather-stat-value"><span class="cf-weather-wind-arrow ${windArrowClass}">↑</span> ${Math.round(day.wind)} mph ${escapeHtml(direction)}</div><div class="cf-weather-stat-label">Wind speed</div></div>
                   </div>
                   <div class="cf-weather-stat" aria-label="Gusts ${Math.round(day.gusts)} miles per hour">
                     ${statIconSvg("gust")}
@@ -633,16 +820,16 @@
       return value.trim().toUpperCase().replace(/\s+/g, "");
     }
 
-    function isFullUkPostcode(value) {
+    function isFullGbPostcode(value) {
       return /^[A-Z]{1,2}\d[A-Z\d]?\d[A-Z]{2}$/.test(normalisePostcode(value));
     }
 
-    function isOutwardUkPostcode(value) {
+    function isOutwardGbPostcode(value) {
       return /^[A-Z]{1,2}\d[A-Z\d]?$/.test(normalisePostcode(value));
     }
 
     function isPostcodeLookup(value) {
-      return isFullUkPostcode(value) || isOutwardUkPostcode(value);
+      return isFullGbPostcode(value) || isOutwardGbPostcode(value);
     }
 
     function shouldLookupPlace(value) {
@@ -659,9 +846,18 @@
     function filteredCourses() {
       const locationSearch = userLocation && locationSearchKey && normaliseSearchKey(query) === locationSearchKey;
       const needle = locationSearch ? "" : query.trim().toLowerCase();
-      const list = needle
+      let list = needle
         ? courses.filter(course => [course.name, course.town, course.county].join(" ").toLowerCase().includes(needle))
         : courses.slice();
+
+      if (restrictToLocality) {
+        const localityNeedle = locality.toLowerCase();
+        list = list.filter(course => [course.name, course.town, course.county, course.regionName].join(" ").toLowerCase().includes(localityNeedle));
+      }
+
+      if (websiteOnly) {
+        list = list.filter(course => course.website);
+      }
 
       return list.sort((a, b) => {
         if (sort === "distance" && userLocation) {
@@ -676,11 +872,49 @@
       });
     }
 
+    function applyPagination(list) {
+      if (!pageSize || !Array.isArray(list)) {
+        return list;
+      }
+
+      const pages = Math.max(1, Math.ceil(list.length / pageSize));
+      if (currentPage > pages) {
+        currentPage = pages;
+      }
+
+      const start = (currentPage - 1) * pageSize;
+      return list.slice(start, start + pageSize);
+    }
+
+    function renderPagination(totalCourses) {
+      if (!pageControlsEl) {
+        return;
+      }
+
+      if (!pageSize || totalCourses <= pageSize) {
+        pageControlsEl.innerHTML = "";
+        return;
+      }
+
+      const pages = Math.max(1, Math.ceil(totalCourses / pageSize));
+      pageControlsEl.innerHTML = `
+        <div class="cf-pagination-inner">
+          <button type="button" class="cf-pagination-button" data-page="prev" ${currentPage === 1 ? "disabled" : ""}>Previous</button>
+          <span class="cf-pagination-info">Page ${currentPage} of ${pages}</span>
+          <button type="button" class="cf-pagination-button" data-page="next" ${currentPage === pages ? "disabled" : ""}>Next</button>
+        </div>
+      `;
+    }
+
     function render() {
       const visibleCourses = filteredCourses();
+      const pagedCourses = applyPagination(visibleCourses);
+      const areaLabel = findAreaOption(areaMode).label;
       countEl.textContent = visibleCourses.length === courses.length
-        ? `${courses.length} courses`
-        : `${visibleCourses.length} of ${courses.length} courses`;
+        ? `${courses.length} ${areaLabel} courses`
+        : `${visibleCourses.length} of ${courses.length} ${areaLabel} courses`;
+
+      renderPagination(visibleCourses.length);
 
       if (!courses.length) {
         listWrapEl.innerHTML = `
@@ -707,11 +941,12 @@
       }
 
       if (!visibleCourses.length) {
-        listWrapEl.innerHTML = `<div class="cf-empty">No courses match "${escapeHtml(query)}". Try a different search term.</div>`;
+        const emptyLabel = query || locality || "these filters";
+        listWrapEl.innerHTML = `<div class="cf-empty">No courses match "${escapeHtml(emptyLabel)}". Try a different search term or area.</div>`;
         return;
       }
 
-      listWrapEl.innerHTML = `<div class="cf-list">${visibleCourses.map(course => {
+      listWrapEl.innerHTML = `<div class="cf-list">${pagedCourses.map(course => {
         const rowId = `dgapi-course-${slugify(course.id || course.name)}`;
           const titleId = `${rowId}-title`;
           const weatherId = `${rowId}-weather`;
@@ -783,8 +1018,8 @@
 
     async function lookupPostcode(postcode) {
       const cleanPostcode = normalisePostcode(postcode);
-      const fullPostcode = isFullUkPostcode(cleanPostcode);
-      const outwardPostcode = isOutwardUkPostcode(cleanPostcode);
+      const fullPostcode = isFullGbPostcode(cleanPostcode);
+      const outwardPostcode = isOutwardGbPostcode(cleanPostcode);
 
       if ((!fullPostcode && !outwardPostcode) || cleanPostcode === lastPostcodeLookup) {
         return;
@@ -900,7 +1135,7 @@
 
     async function loadCourses(options = {}) {
       if (!options.preserveStatus) {
-        setStatus(areaMode === "gb" ? "Loading England, Wales and Scotland course list..." : "Loading latest England course list...");
+        setStatus(`Loading ${findAreaOption(areaMode).label} course list...`);
       }
       render();
 
@@ -915,6 +1150,7 @@
           throw new Error("DiscGolfAPI returned no courses");
         }
 
+        currentPage = 1;
         courses = payload.courses
           .map(normalizeCourse)
           .filter(course => course.name);
@@ -1088,6 +1324,7 @@
 
     searchEl.addEventListener("input", event => {
       query = event.target.value;
+      currentPage = 1;
       render();
 
       window.clearTimeout(postcodeTimer);
@@ -1099,9 +1336,10 @@
     });
 
     areaEl.addEventListener("change", event => {
-      areaMode = event.target.value === "gb" ? "gb" : "england";
+      areaMode = event.target.value;
       userLocation = null;
       locationSearchKey = "";
+      currentPage = 1;
       if (sort === "distance") {
         sort = "name";
         sortEl.value = "name";
@@ -1111,6 +1349,7 @@
 
     sortEl.addEventListener("change", event => {
       sort = event.target.value;
+      currentPage = 1;
       if (sort === "distance" && !userLocation) {
         setStatus("Enter a postcode or use your location to sort by closest course.");
         sort = "name";
@@ -1145,6 +1384,29 @@
       }
     });
 
+    if (pageControlsEl) {
+      pageControlsEl.addEventListener("click", event => {
+        const button = event.target.closest("[data-page]");
+        if (!button) {
+          return;
+        }
+
+        const action = button.getAttribute("data-page");
+        const visibleCourses = filteredCourses();
+        const pages = Math.max(1, Math.ceil(visibleCourses.length / pageSize));
+
+        if (action === "prev" && currentPage > 1) {
+          currentPage -= 1;
+          render();
+        }
+
+        if (action === "next" && currentPage < pages) {
+          currentPage += 1;
+          render();
+        }
+      });
+    }
+
     document.addEventListener("click", event => {
       const modal = document.getElementById("dgapi-directions-modal");
       if (!modal || modal.hidden) {
@@ -1163,7 +1425,11 @@
     });
 
     render();
-    loadCourses().then(loadCourseBadges);
+    loadCourses().then(loadCourseBadges).then(() => {
+      if (autoNearby) {
+        useBrowserLocation();
+      }
+    });
   }
 
   if (document.readyState === "loading") {

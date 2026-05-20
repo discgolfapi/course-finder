@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Disc Golf Course Finder Configurator</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f8fb;
+      --surface: #ffffff;
+      --surface-muted: #eef4f8;
+      --text: #334155;
+      --heading: #0f172a;
+      --border: #d8e3ec;
+      --primary: #1e73be;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(1080px, calc(100% - 32px));
+      margin: 28px auto;
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      color: var(--heading);
+      font-size: clamp(1.7rem, 3vw, 2.5rem);
+      line-height: 1.1;
+    }
+
+    .cfg-layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .cfg-panel,
+    .cfg-output {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .cfg-panel {
+      display: grid;
+      gap: 14px;
+      padding: 16px;
+    }
+
+    .cfg-row {
+      display: grid;
+      gap: 6px;
+    }
+
+    .cfg-checks {
+      display: grid;
+      gap: 10px;
+      padding-top: 4px;
+    }
+
+    label {
+      color: var(--heading);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    select,
+    input,
+    textarea {
+      width: 100%;
+      min-height: 38px;
+      box-sizing: border-box;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+    }
+
+    input,
+    select {
+      padding: 8px 10px;
+    }
+
+    input[type="checkbox"] {
+      width: auto;
+      min-height: auto;
+    }
+
+    input[type="color"] {
+      padding: 3px;
+    }
+
+    textarea {
+      min-height: 560px;
+      padding: 14px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .cfg-output {
+      overflow: hidden;
+    }
+
+    .cfg-output-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-muted);
+    }
+
+    .cfg-output-title {
+      color: var(--heading);
+      font-weight: 800;
+    }
+
+    .cfg-copy {
+      min-height: 34px;
+      padding: 7px 12px;
+      border: 1.5px solid var(--primary);
+      border-radius: 7px;
+      background: var(--primary);
+      color: #fff;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .cfg-output textarea {
+      border: 0;
+      border-radius: 0;
+    }
+
+    @media (max-width: 760px) {
+      main {
+        width: min(100% - 20px, 1080px);
+        margin: 18px auto;
+      }
+
+      .cfg-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Disc Golf Course Finder Configurator</h1>
+
+    <div class="cfg-layout">
+      <form class="cfg-panel" id="cfg-form">
+        <div class="cfg-row">
+          <label for="cfg-preset">Scope</label>
+          <select id="cfg-preset" name="preset">
+            <option value="gb">GB</option>
+            <option value="england">England</option>
+            <option value="global">Global</option>
+            <option value="us-state">US state</option>
+            <option value="custom">Custom country or region</option>
+          </select>
+        </div>
+
+        <div class="cfg-row">
+          <label for="cfg-country">Country code</label>
+          <input id="cfg-country" name="country" value="GB" maxlength="8">
+        </div>
+
+        <div class="cfg-row">
+          <label for="cfg-region">Region or US state code</label>
+          <input id="cfg-region" name="region" placeholder="OR">
+        </div>
+
+        <div class="cfg-row">
+          <label for="cfg-locality">Locality</label>
+          <input id="cfg-locality" name="locality" placeholder="Portland">
+        </div>
+
+        <div class="cfg-row">
+          <label for="cfg-locality-mode">Locality mode</label>
+          <select id="cfg-locality-mode" name="localityMode">
+            <option value="nearby">Nearby can leave locality</option>
+            <option value="restrict">Restrict to locality</option>
+          </select>
+        </div>
+
+        <div class="cfg-row">
+          <label for="cfg-weather-days">Weather days</label>
+          <input id="cfg-weather-days" name="weatherDays" type="number" min="1" max="7" value="2">
+        </div>
+
+        <div class="cfg-row">
+          <label for="cfg-page-size">Page size</label>
+          <input id="cfg-page-size" name="pageSize" type="number" min="0" max="100" value="15">
+        </div>
+
+        <div class="cfg-row">
+          <label for="cfg-primary">Primary colour</label>
+          <input id="cfg-primary" name="primary" type="color" value="#1e73be">
+        </div>
+
+        <div class="cfg-row">
+          <label for="cfg-badges-url">Badge JSON URL</label>
+          <input id="cfg-badges-url" name="badgesUrl" placeholder="https://example.com/course-badges.json">
+        </div>
+
+        <div class="cfg-checks">
+          <label><input type="checkbox" name="autoNearby"> Auto nearby</label>
+          <label><input type="checkbox" name="websiteOnly"> Website links only</label>
+          <label><input type="checkbox" name="compact"> Compact layout</label>
+        </div>
+      </form>
+
+      <section class="cfg-output" aria-label="Generated embed">
+        <div class="cfg-output-head">
+          <span class="cfg-output-title">Embed HTML</span>
+          <button class="cfg-copy" id="cfg-copy" type="button">Copy</button>
+        </div>
+        <textarea id="cfg-code" readonly spellcheck="false"></textarea>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const form = document.getElementById("cfg-form");
+      const output = document.getElementById("cfg-code");
+      const copyButton = document.getElementById("cfg-copy");
+
+      function attr(name, value) {
+        if (!String(value || "").trim()) {
+          return "";
+        }
+        return `\n  ${name}="${String(value).replace(/&/g, "&amp;").replace(/"/g, "&quot;")}"`;
+      }
+
+      function checked(name) {
+        return form.elements[name].checked;
+      }
+
+      function updateCountryDefaults() {
+        const preset = form.elements.preset.value;
+        if (preset === "gb" || preset === "england") {
+          form.elements.country.value = "GB";
+          form.elements.region.value = preset === "england" ? "ENG" : "";
+        }
+        if (preset === "global") {
+          form.elements.country.value = "";
+          form.elements.region.value = "";
+        }
+        if (preset === "us-state") {
+          form.elements.country.value = "US";
+        }
+      }
+
+      function update() {
+        const preset = form.elements.preset.value;
+        const country = form.elements.country.value.trim().toUpperCase();
+        const region = form.elements.region.value.trim().toUpperCase();
+        const locality = form.elements.locality.value.trim();
+        const localityMode = form.elements.localityMode.value;
+        const weatherDays = form.elements.weatherDays.value;
+        const pageSize = form.elements.pageSize.value;
+        const primary = form.elements.primary.value;
+        const badgesUrl = form.elements.badgesUrl.value.trim();
+
+        const section = `<section
+  class="dgapi-course-finder"
+  aria-label="Disc golf courses directory"${attr("data-preset", preset)}${attr("data-country", country)}${attr("data-region", region)}${attr("data-locality", locality)}${attr("data-locality-mode", locality ? localityMode : "")}${attr("data-page-size", pageSize)}${attr("data-forecast-days", weatherDays)}${attr("data-theme-primary", primary)}${attr("data-badges-url", badgesUrl)}${checked("autoNearby") ? attr("data-auto-nearby", "true") : ""}${checked("websiteOnly") ? attr("data-website-only", "true") : ""}${checked("compact") ? attr("data-layout", "compact") : ""}
+>
+  <div class="cf-controls">
+    <div class="cf-search-wrap">
+      <span class="cf-search-icon" aria-hidden="true">&#8981;</span>
+      <input class="cf-search" id="dgapi-cf-search" type="search" placeholder="Search by name, town or postcode..." autocomplete="off" aria-label="Search courses by name, town or full or partial postcode">
+    </div>
+    <button class="cf-button" id="dgapi-cf-near-me" type="button">Use my location</button>
+    <select class="cf-select cf-area-select" id="dgapi-cf-area" aria-label="Course area"></select>
+    <select class="cf-select" id="dgapi-cf-sort" aria-label="Sort courses">
+      <option value="name">A-Z by name</option>
+      <option value="location">A-Z by location</option>
+      <option value="distance">Nearest first</option>
+    </select>
+    <span class="cf-count" id="dgapi-cf-count" aria-live="polite"></span>
+  </div>
+  <div id="dgapi-cf-status" class="cf-status" hidden></div>
+  <div id="dgapi-cf-list-wrap"></div>
+  <div id="dgapi-cf-pagination" class="cf-pagination" aria-label="Course page navigation"></div>
+  <div class="cf-footer">
+    <a class="cf-footer-brand" href="https://discgolfapi.com/" target="_blank" rel="noopener" aria-label="DiscGolfAPI">
+      <img class="cf-footer-logo" src="https://public.discgolfapi.com/images/dgapiLogo.png" alt="DiscGolfAPI logo" loading="lazy" width="36" height="36">
+      <span>Course data supplied by DiscGolfAPI.</span>
+    </a>
+    <span class="cf-disclaimer">Course details are provided as-is and may change. Please check with the course before travelling.</span>
+  </div>
+</section>`;
+
+        output.value = `<link rel="stylesheet" href="./assets/course-finder.css">\n${section}\n<script src="./assets/course-finder.js"><\\/script>`;
+      }
+
+      form.addEventListener("change", event => {
+        if (event.target.name === "preset") {
+          updateCountryDefaults();
+        }
+        update();
+      });
+      form.addEventListener("input", update);
+      copyButton.addEventListener("click", () => {
+        output.select();
+        navigator.clipboard.writeText(output.value).catch(() => {});
+      });
+
+      update();
+    })();
+  </script>
+</body>
+</html>

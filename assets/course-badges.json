@@ -10,7 +10,8 @@
     {
       "id": "crs_box_end_park_disc_golf",
       "badges": [
-        { "label": "Course Badge Partner" }
+        { "label": "Course Badge Partner" },
+        { "label": "2026 Member Course", "url": "/membership/membership-course-card/" }
       ]
     },
     {

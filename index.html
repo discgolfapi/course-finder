@@ -8,10 +8,23 @@
 </head>
 <body>
   <main>
+    <!--
+      attribution: "Course data supplied by DiscGolfAPI."
+      attribution_required: true
+      license: "Free to use with attribution."
+      license_url: "https://discgolfapi.com/licence/"
+      terms_url: "https://discgolfapi.com/terms/"
+      no_warranty: "Data is provided as-is. Accuracy, completeness and availability are not guaranteed."
+    -->
     <section
       class="dgapi-course-finder"
-      aria-label="Disc golf courses in England"
+      aria-label="Disc golf courses directory"
       data-api-base-url="https://io.discgolfapi.com/v1/courses"
+      data-preset="gb"
+      data-area-default="england"
+      data-page-size="15"
+      data-forecast-days="7"
+      data-badges-url="./assets/course-badges.json"
     >
       <div class="cf-controls">
         <div class="cf-search-wrap">
@@ -37,9 +50,14 @@
 
       <div id="dgapi-cf-status" class="cf-status" hidden></div>
       <div id="dgapi-cf-list-wrap"></div>
+      <div id="dgapi-cf-pagination" class="cf-pagination" aria-label="Course page navigation"></div>
 
+      <!-- DiscGolfAPI attribution must remain visible and may not be removed. -->
       <div class="cf-footer">
-        <span>Course data supplied by <a href="https://discgolfapi.com/" target="_blank" rel="noopener">DiscGolfAPI</a>.</span>
+        <a class="cf-footer-brand" href="https://discgolfapi.com/" target="_blank" rel="noopener" aria-label="DiscGolfAPI">
+          <img class="cf-footer-logo" src="https://public.discgolfapi.com/images/dgapiLogo.png" alt="DiscGolfAPI logo" loading="lazy" width="36" height="36">
+          <span>Course data supplied by DiscGolfAPI.</span>
+        </a>
         <span class="cf-disclaimer">Course details are provided as-is and may change. Please check with the course before travelling.</span>
       </div>
     </section>
