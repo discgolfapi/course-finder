@@ -118,6 +118,7 @@
     }
 
     .cfg-tip {
+      position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -125,11 +126,43 @@
       height: 17px;
       border: 1px solid var(--border);
       border-radius: 50%;
+      background: #fff;
       color: var(--primary);
+      font: inherit;
       font-size: 11px;
       font-weight: 900;
       line-height: 1;
       cursor: help;
+    }
+
+    .cfg-tip::after {
+      content: attr(aria-label);
+      position: absolute;
+      z-index: 5;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      width: min(260px, 72vw);
+      padding: 9px 10px;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      border-radius: 7px;
+      background: #0f172a;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.35;
+      text-align: left;
+      white-space: normal;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.22);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 4px);
+      transition: opacity 0.14s ease, transform 0.14s ease;
+    }
+
+    .cfg-tip:hover::after,
+    .cfg-tip:focus-visible::after {
+      opacity: 1;
+      transform: translate(-50%, 0);
     }
 
     select,
@@ -235,7 +268,7 @@
     <div class="cfg-layout">
       <form class="cfg-panel" id="cfg-form">
         <div class="cfg-row">
-          <label for="cfg-preset">Scope <span class="cfg-required">required</span> <span class="cfg-tip" title="Choose the broad course list to load before any search or locality filters are applied.">?</span></label>
+          <label for="cfg-preset">Scope <span class="cfg-required">required</span> <button class="cfg-tip" type="button" aria-label="Choose the broad course list to load before any search or locality filters are applied.">?</button></label>
           <select id="cfg-preset" name="preset" title="Required. Choose the broad course list to load.">
             <optgroup label="Popular disc golf regions">
               <option value="popular-gb">GB</option>
@@ -261,62 +294,62 @@
         </div>
 
         <div class="cfg-row">
-          <label for="cfg-country">Country code <span class="cfg-optional">optional</span> <span class="cfg-tip" title="Use an ISO 3166-1 alpha-2 country code, such as GB or US. Required for custom country scopes and US state scopes.">?</span></label>
+          <label for="cfg-country">Country code <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Use an ISO 3166-1 alpha-2 country code, such as GB or US. Required for custom country scopes and US state scopes.">?</button></label>
           <input id="cfg-country" name="country" value="GB" maxlength="8" title="Optional for presets; required for custom country scopes. Use an ISO 3166-1 alpha-2 code such as GB or US.">
           <p class="cfg-help">Optional for presets. Use an <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" target="_blank" rel="noopener">ISO 3166-1 alpha-2</a> code such as <code>GB</code> or <code>US</code>.</p>
         </div>
 
         <div class="cfg-row">
-          <label for="cfg-region">Region or US state code <span class="cfg-optional">optional</span> <span class="cfg-tip" title="Use this to narrow a country to a region. For US states, use two-letter state codes such as OR or CA.">?</span></label>
+          <label for="cfg-region">Region or US state code <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Use this to narrow a country to a region. For US states, use two-letter state codes such as OR or CA.">?</button></label>
           <input id="cfg-region" name="region" placeholder="OR" title="Optional. Use a region code, such as ENG for England or OR for Oregon.">
-          <p class="cfg-help">Optional unless using a US state scope. Examples: <code>ENG</code>, <code>OR</code>, <code>CA</code>.</p>
+          <p class="cfg-help">Optional unless using a US state scope. Type the short region code used by DiscGolfAPI: US states use USPS two-letter codes such as <code>OR</code>, <code>CA</code>, <code>TX</code>; GB examples include <code>ENG</code>, <code>WLS</code>, <code>SCT</code>. Leave blank for the whole country.</p>
         </div>
 
         <div class="cfg-row">
-          <label for="cfg-locality">Locality <span class="cfg-optional">optional</span> <span class="cfg-tip" title="Use a town, city or local area to start the finder focused on that place.">?</span></label>
+          <label for="cfg-locality">Locality <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Use a town, city or local area to start the finder focused on that place.">?</button></label>
           <input id="cfg-locality" name="locality" placeholder="Portland" title="Optional. A town, city or local area to seed or restrict the finder.">
-          <p class="cfg-help">Optional. Starts the finder with this place as the search term, or restricts to it if locality mode is set to restrict.</p>
+          <p class="cfg-help">Optional. Type a town, city, county or local area users would search for, such as <code>Portland</code>, <code>Bristol</code>, <code>Warwickshire</code> or <code>Leamington Spa</code>. It matches course name, town and county text.</p>
         </div>
 
         <div class="cfg-row">
-          <label for="cfg-locality-mode">Locality mode <span class="cfg-optional">optional</span> <span class="cfg-tip" title="Nearby mode lets user-location searches show courses outside the locality. Restrict mode always filters to the locality.">?</span></label>
+          <label for="cfg-locality-mode">Locality mode <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Nearby mode lets user-location searches show courses outside the locality. Restrict mode always filters to the locality.">?</button></label>
           <select id="cfg-locality-mode" name="localityMode" title="Optional. Only applies when a locality is set.">
             <option value="nearby">Nearby can leave locality</option>
             <option value="restrict">Restrict to locality</option>
           </select>
-          <p class="cfg-help">Optional. Only applies when Locality is set.</p>
+          <p class="cfg-help">Optional. Only applies when Locality is set. Use nearby for “start around this place, but let visitors find close courses outside it”; use restrict for “only show this locality.”</p>
         </div>
 
         <div class="cfg-row">
-          <label for="cfg-weather-days">Weather days <span class="cfg-optional">optional</span> <span class="cfg-tip" title="Controls how many forecast days appear when a visitor opens a course weather panel.">?</span></label>
+          <label for="cfg-weather-days">Weather days <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Controls how many forecast days appear when a visitor opens a course weather panel.">?</button></label>
           <input id="cfg-weather-days" name="weatherDays" type="number" min="1" max="7" value="2" title="Optional. Forecast days, from 1 to 7.">
           <p class="cfg-help">Optional. Choose between <code>1</code> and <code>7</code>. The layout wraps extra days onto new rows.</p>
         </div>
 
         <div class="cfg-row">
-          <label for="cfg-page-size">Page size <span class="cfg-optional">optional</span> <span class="cfg-tip" title="Controls how many courses appear per page. Use 0 to disable pagination.">?</span></label>
+          <label for="cfg-page-size">Page size <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Controls how many courses appear per page. Use 0 to disable pagination.">?</button></label>
           <input id="cfg-page-size" name="pageSize" type="number" min="0" max="100" value="15" title="Optional. Courses per page; use 0 to disable pagination.">
           <p class="cfg-help">Optional. Use <code>0</code> to show all matching courses without pagination.</p>
         </div>
 
         <div class="cfg-row">
-          <label for="cfg-primary">Primary colour <span class="cfg-optional">optional</span> <span class="cfg-tip" title="Sets the main button, link and accent colour for the embedded finder.">?</span></label>
+          <label for="cfg-primary">Primary colour <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Sets the main button, link and accent colour for the embedded finder.">?</button></label>
           <input id="cfg-primary" name="primary" type="color" value="#1e73be" title="Optional. Main brand colour for the embedded finder.">
           <p class="cfg-help">Optional. Used for buttons, badge borders and interactive accents.</p>
         </div>
 
         <div class="cfg-row">
-          <label for="cfg-badges-url">Badge JSON URL <span class="cfg-optional">optional</span> <span class="cfg-tip" title="Point this at a site-owned JSON file if you want custom badges. Remote files need CORS headers.">?</span></label>
+          <label for="cfg-badges-url">Badge JSON URL <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Point this at a site-owned JSON file if you want custom badges. Remote files need CORS headers.">?</button></label>
           <input id="cfg-badges-url" name="badgesUrl" placeholder="https://example.com/course-badges.json" title="Optional. URL for custom course badge JSON. Remote files need CORS headers.">
           <p class="cfg-help">Optional. Leave blank to use the bundled badge fallback. Remote JSON must allow browser access with CORS.</p>
         </div>
 
         <div class="cfg-checks">
-          <label title="Optional. Ask the visitor for browser location after courses load. Requires HTTPS on most websites."><input type="checkbox" name="autoNearby"> Auto nearby <span class="cfg-optional">optional</span> <span class="cfg-tip" title="Ask the visitor for browser location after courses load. Requires HTTPS on most websites.">?</span></label>
+          <label><input type="checkbox" name="autoNearby"> Auto nearby <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Ask the visitor for browser location after courses load. Requires HTTPS on most websites.">?</button></label>
           <p class="cfg-help">Optional. Requests location automatically; best for pages where nearby courses are the main experience.</p>
-          <label title="Optional. Hide courses that do not have a website link in DiscGolfAPI."><input type="checkbox" name="websiteOnly"> Website links only <span class="cfg-optional">optional</span> <span class="cfg-tip" title="Show only courses with website links.">?</span></label>
+          <label><input type="checkbox" name="websiteOnly"> Website links only <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Show only courses with website links.">?</button></label>
           <p class="cfg-help">Optional. Useful for tourism or trip-planning pages where every result should have an external link.</p>
-          <label title="Optional. Use tighter row spacing and single-column weather cards for sidebar-style embeds."><input type="checkbox" name="compact"> Compact layout <span class="cfg-optional">optional</span> <span class="cfg-tip" title="Use a tighter layout for sidebars or narrow content areas.">?</span></label>
+          <label><input type="checkbox" name="compact"> Compact layout <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Use a tighter layout for sidebars or narrow content areas.">?</button></label>
           <p class="cfg-help">Optional. Better for sidebars, narrow columns and dense pages.</p>
         </div>
       </form>
