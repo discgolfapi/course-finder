@@ -534,34 +534,8 @@
           return;
         }
 
-        const baseHref = window.location.href.replace(/[^/]*$/, "");
         const previewSection = section.replace(/\n  data-auto-nearby="true"/, "");
-        preview.srcdoc = `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <base href="${baseHref}">
-  <link rel="stylesheet" href="./assets/course-finder.css">
-  <style>
-    body {
-      margin: 0;
-      background: #fff;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-    main {
-      width: min(100% - 24px, 1040px);
-      margin: 16px auto;
-    }
-  </style>
-</head>
-<body>
-  <main>
-${previewSection}
-  </main>
-  <script src="./assets/course-finder.js"><\\/script>
-</body>
-</html>`;
+        preview.src = `./preview.html?ts=${Date.now()}#${encodeURIComponent(previewSection)}`;
       }
 
       form.addEventListener("change", event => {
