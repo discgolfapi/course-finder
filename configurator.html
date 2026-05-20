@@ -82,6 +82,10 @@
       gap: 6px;
     }
 
+    .cfg-row.is-disabled {
+      opacity: 0.58;
+    }
+
     .cfg-checks {
       display: grid;
       gap: 10px;
@@ -310,12 +314,13 @@
     <div class="cfg-layout">
       <form class="cfg-panel" id="cfg-form">
         <div class="cfg-row">
-          <label for="cfg-preset">Scope <span class="cfg-required">required</span> <button class="cfg-tip" type="button" aria-label="Choose the broad course list to load before any search or locality filters are applied.">?</button></label>
+          <label for="cfg-preset">Course list <span class="cfg-required">required</span> <button class="cfg-tip" type="button" aria-label="Choose the broad course list to load before search, locality and website filters are applied.">?</button></label>
           <select id="cfg-preset" name="preset" title="Required. Choose the broad course list to load.">
             <optgroup label="Popular disc golf regions">
-              <option value="popular-gb">GB</option>
-              <option value="popular-scotland">Scotland</option>
-              <option value="popular-wales">Wales</option>
+              <option value="popular-gb">Great Britain</option>
+              <option value="popular-england">England</option>
+              <option value="popular-gb-scotland">Great Britain, start near Scotland</option>
+              <option value="popular-gb-wales">Great Britain, start near Wales</option>
               <option value="popular-us">United States</option>
               <option value="popular-us-or">US Oregon</option>
               <option value="popular-us-ca">US California</option>
@@ -327,43 +332,39 @@
               <option value="popular-ee">Estonia</option>
             </optgroup>
             <optgroup label="General scopes">
-              <option value="gb">GB</option>
-              <option value="england">England</option>
-              <option value="scotland">Scotland</option>
-              <option value="wales">Wales</option>
               <option value="global">Global</option>
               <option value="us-state">US state</option>
               <option value="custom">Custom country or region</option>
             </optgroup>
           </select>
-          <p class="cfg-help">Required. Popular choices fill the country and region fields automatically; use custom for another country or region.</p>
+          <p class="cfg-help">Required. Pick a ready-made list, or choose custom when you know the DiscGolfAPI country and region codes. Scotland and Wales use the GB list with a start search because the current API region feed does not expose separate SCT/WLS lists.</p>
         </div>
 
-        <div class="cfg-row">
-          <label for="cfg-country">Country code <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Use an ISO 3166-1 alpha-2 country code, such as GB or US. Required for custom country scopes and US state scopes.">?</button></label>
+        <div class="cfg-row" id="cfg-country-row">
+          <label for="cfg-country">Country filter <span class="cfg-optional">advanced</span> <button class="cfg-tip" type="button" aria-label="Use an ISO 3166-1 alpha-2 country code, such as GB or US. This is only editable for custom country or US state lists.">?</button></label>
           <input id="cfg-country" name="country" value="GB" maxlength="8" title="Optional for presets; required for custom country scopes. Use an ISO 3166-1 alpha-2 code such as GB or US.">
-          <p class="cfg-help">Optional for presets. Use an <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" target="_blank" rel="noopener">ISO 3166-1 alpha-2</a> code such as <code>GB</code> or <code>US</code>.</p>
+          <p class="cfg-help">Advanced. Only edit this for custom lists. Use <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2" target="_blank" rel="noopener">ISO 3166-1 alpha-2</a> codes such as <code>GB</code>, <code>US</code> or <code>FI</code>.</p>
         </div>
 
-        <div class="cfg-row">
-          <label for="cfg-region">Region or US state code <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Use this to narrow a country to a region. For US states, use two-letter state codes such as OR or CA.">?</button></label>
+        <div class="cfg-row" id="cfg-region-row">
+          <label for="cfg-region">Region filter <span class="cfg-optional">advanced</span> <button class="cfg-tip" type="button" aria-label="Use this to narrow a custom country list to a region. For US states, use two-letter state codes such as OR or CA.">?</button></label>
           <input id="cfg-region" name="region" placeholder="OR" title="Optional. Use a region code, such as ENG for England or OR for Oregon.">
-          <p class="cfg-help">Optional unless using a US state scope. Type the short region code used by DiscGolfAPI: US states use USPS two-letter codes such as <code>OR</code>, <code>CA</code>, <code>TX</code>; GB examples include <code>ENG</code>, <code>WLS</code>, <code>SCT</code>. Leave blank for the whole country.</p>
+          <p class="cfg-help">Advanced. US states use two-letter codes such as <code>OR</code>, <code>CA</code> or <code>TX</code>. Leave blank for the whole selected country.</p>
         </div>
 
         <div class="cfg-row">
-          <label for="cfg-locality">Locality <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Use a town, city or local area to start the finder focused on that place.">?</button></label>
+          <label for="cfg-locality">Start search <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Use a town, city, county or local area to pre-fill the search box.">?</button></label>
           <input id="cfg-locality" name="locality" placeholder="Portland" title="Optional. A town, city or local area to seed or restrict the finder.">
-          <p class="cfg-help">Optional. Type a town, city, county or local area users would search for, such as <code>Portland</code>, <code>Bristol</code>, <code>Warwickshire</code> or <code>Leamington Spa</code>. It matches course name, town and county text.</p>
+          <p class="cfg-help">Optional. Pre-fills the finder search with a town, city, county or local area such as <code>Portland</code>, <code>Bristol</code> or <code>Warwickshire</code>.</p>
         </div>
 
         <div class="cfg-row">
-          <label for="cfg-locality-mode">Locality mode <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Nearby mode lets user-location searches show courses outside the locality. Restrict mode always filters to the locality.">?</button></label>
+          <label for="cfg-locality-mode">Start search behaviour <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Nearby mode lets user-location searches show courses outside the starting search. Restrict mode always keeps the list filtered to that place text.">?</button></label>
           <select id="cfg-locality-mode" name="localityMode" title="Optional. Only applies when a locality is set.">
-            <option value="nearby">Nearby can leave locality</option>
-            <option value="restrict">Restrict to locality</option>
+            <option value="nearby">Can show nearby courses</option>
+            <option value="restrict">Keep results restricted</option>
           </select>
-          <p class="cfg-help">Optional. Only applies when Locality is set. Use nearby for “start around this place, but let visitors find close courses outside it”; use restrict for “only show this locality.”</p>
+          <p class="cfg-help">Optional. Only applies when Start search is set. Use nearby for a softer starting point, or restrict to keep results matched to that text.</p>
         </div>
 
         <div class="cfg-row">
@@ -388,6 +389,15 @@
             <option value="kph">Kilometres per hour (km/h)</option>
           </select>
           <p class="cfg-help">Optional. Controls wind and gust values in weather panels.</p>
+        </div>
+
+        <div class="cfg-row">
+          <label for="cfg-weather-time-format">Weather time format <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Choose whether sunrise and sunset are displayed as a 24-hour clock or AM/PM.">?</button></label>
+          <select id="cfg-weather-time-format" name="weatherTimeFormat" title="Optional. Choose 24-hour or AM/PM weather times.">
+            <option value="24h">24-hour clock (23:59)</option>
+            <option value="12h">AM/PM (11:59 PM)</option>
+          </select>
+          <p class="cfg-help">Optional. Controls sunrise and sunset times in weather panels.</p>
         </div>
 
         <div class="cfg-row">
@@ -430,7 +440,7 @@
     <section class="cfg-preview" aria-label="Live preview">
       <div class="cfg-preview-head">
         <span class="cfg-preview-title">Live Preview</span>
-        <span class="cfg-preview-note">Updates as you change options. Live course data may take a moment to load. Auto nearby is disabled in preview.</span>
+        <span class="cfg-preview-note">Updates as you change options. Single-list previews hide the area dropdown. Auto nearby is disabled in preview.</span>
       </div>
       <iframe class="cfg-preview-frame" id="cfg-preview" title="Course finder preview"></iframe>
     </section>
@@ -442,6 +452,8 @@
       const output = document.getElementById("cfg-code");
       const copyButton = document.getElementById("cfg-copy");
       const preview = document.getElementById("cfg-preview");
+      const countryRow = document.getElementById("cfg-country-row");
+      const regionRow = document.getElementById("cfg-region-row");
       let previewTimer = 0;
 
       function attr(name, value) {
@@ -456,18 +468,19 @@
       }
 
       const popularScopes = {
-        "popular-gb": { preset: "gb", country: "GB", region: "" },
-        "popular-scotland": { preset: "scotland", country: "GB", region: "SCT" },
-        "popular-wales": { preset: "wales", country: "GB", region: "WLS" },
-        "popular-us": { preset: "custom", country: "US", region: "" },
-        "popular-us-or": { preset: "us-state", country: "US", region: "OR" },
-        "popular-us-ca": { preset: "us-state", country: "US", region: "CA" },
-        "popular-us-tx": { preset: "us-state", country: "US", region: "TX" },
-        "popular-us-nc": { preset: "us-state", country: "US", region: "NC" },
-        "popular-ca": { preset: "custom", country: "CA", region: "" },
-        "popular-fi": { preset: "custom", country: "FI", region: "" },
-        "popular-se": { preset: "custom", country: "SE", region: "" },
-        "popular-ee": { preset: "custom", country: "EE", region: "" }
+        "popular-gb": { preset: "gb", country: "GB", region: "", areaDefault: "gb" },
+        "popular-england": { preset: "england", country: "GB", region: "ENG", areaDefault: "england" },
+        "popular-gb-scotland": { preset: "gb", country: "GB", region: "", areaDefault: "gb", locality: "Scotland" },
+        "popular-gb-wales": { preset: "gb", country: "GB", region: "", areaDefault: "gb", locality: "Wales" },
+        "popular-us": { preset: "custom", country: "US", region: "", areaDefault: "" },
+        "popular-us-or": { preset: "us-state", country: "US", region: "OR", areaDefault: "" },
+        "popular-us-ca": { preset: "us-state", country: "US", region: "CA", areaDefault: "" },
+        "popular-us-tx": { preset: "us-state", country: "US", region: "TX", areaDefault: "" },
+        "popular-us-nc": { preset: "us-state", country: "US", region: "NC", areaDefault: "" },
+        "popular-ca": { preset: "custom", country: "CA", region: "", areaDefault: "" },
+        "popular-fi": { preset: "custom", country: "FI", region: "", areaDefault: "" },
+        "popular-se": { preset: "custom", country: "SE", region: "", areaDefault: "" },
+        "popular-ee": { preset: "custom", country: "EE", region: "", areaDefault: "" }
       };
 
       function selectedScope() {
@@ -475,7 +488,8 @@
         return popularScopes[selected] || {
           preset: selected,
           country: form.elements.country.value.trim().toUpperCase(),
-          region: form.elements.region.value.trim().toUpperCase()
+          region: form.elements.region.value.trim().toUpperCase(),
+          areaDefault: ""
         };
       }
 
@@ -485,6 +499,12 @@
         if (popular) {
           form.elements.country.value = popular.country;
           form.elements.region.value = popular.region;
+          if (Object.prototype.hasOwnProperty.call(popular, "locality")) {
+            form.elements.locality.value = popular.locality;
+            form.elements.localityMode.value = "nearby";
+          } else {
+            form.elements.locality.value = "";
+          }
           return;
         }
 
@@ -502,23 +522,35 @@
         }
       }
 
+      function updateAdvancedFields() {
+        const selected = form.elements.preset.value;
+        const countryEditable = selected === "custom" || selected === "us-state";
+        const regionEditable = selected === "custom" || selected === "us-state";
+        form.elements.country.disabled = !countryEditable;
+        form.elements.region.disabled = !regionEditable;
+        countryRow.classList.toggle("is-disabled", !countryEditable);
+        regionRow.classList.toggle("is-disabled", !regionEditable);
+      }
+
       function update() {
         const scope = selectedScope();
         const preset = scope.preset;
         const country = scope.country;
         const region = scope.region;
+        const areaDefault = scope.areaDefault || "";
         const locality = form.elements.locality.value.trim();
         const localityMode = form.elements.localityMode.value;
         const weatherDays = form.elements.weatherDays.value;
         const temperatureUnit = form.elements.temperatureUnit.value;
         const windSpeedUnit = form.elements.windSpeedUnit.value;
+        const weatherTimeFormat = form.elements.weatherTimeFormat.value;
         const pageSize = form.elements.pageSize.value;
         const primary = form.elements.primary.value;
         const badgesUrl = form.elements.badgesUrl.value.trim();
 
         const section = `<section
   class="dgapi-course-finder"
-  aria-label="Disc golf courses directory"${attr("data-preset", preset)}${attr("data-country", country)}${attr("data-region", region)}${attr("data-locality", locality)}${attr("data-locality-mode", locality ? localityMode : "")}${attr("data-page-size", pageSize)}${attr("data-forecast-days", weatherDays)}${attr("data-temperature-unit", temperatureUnit)}${attr("data-wind-speed-unit", windSpeedUnit)}${attr("data-theme-primary", primary)}${attr("data-badges-url", badgesUrl)}${checked("autoNearby") ? attr("data-auto-nearby", "true") : ""}${checked("websiteOnly") ? attr("data-website-only", "true") : ""}${checked("compact") ? attr("data-layout", "compact") : ""}
+  aria-label="Disc golf courses directory"${attr("data-preset", preset)}${attr("data-country", country)}${attr("data-region", region)}${attr("data-area-default", areaDefault)}${attr("data-locality", locality)}${attr("data-locality-mode", locality ? localityMode : "")}${attr("data-page-size", pageSize)}${attr("data-forecast-days", weatherDays)}${attr("data-temperature-unit", temperatureUnit)}${attr("data-wind-speed-unit", windSpeedUnit)}${attr("data-weather-time-format", weatherTimeFormat)}${attr("data-theme-primary", primary)}${attr("data-badges-url", badgesUrl)}${checked("autoNearby") ? attr("data-auto-nearby", "true") : ""}${checked("websiteOnly") ? attr("data-website-only", "true") : ""}${checked("compact") ? attr("data-layout", "compact") : ""}
 >
   <div class="cf-controls">
     <div class="cf-search-wrap">
@@ -547,6 +579,7 @@
 </section>`;
 
         output.value = `<link rel="stylesheet" href="./assets/course-finder.css">\n${section}\n<script src="./assets/course-finder.js"><\\/script>`;
+        updateAdvancedFields();
         schedulePreview(section);
       }
 
@@ -567,6 +600,7 @@
       form.addEventListener("change", event => {
         if (event.target.name === "preset") {
           updateCountryDefaults();
+          updateAdvancedFields();
         }
         update();
       });

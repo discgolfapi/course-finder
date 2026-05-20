@@ -494,6 +494,19 @@ main {
 .dgapi-course-finder .cf-wind-direction-5 { transform: rotate(225deg); }
 .dgapi-course-finder .cf-wind-direction-6 { transform: rotate(270deg); }
 .dgapi-course-finder .cf-wind-direction-7 { transform: rotate(315deg); }
+.dgapi-course-finder .cf-weather-credit {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: right;
+}
+.dgapi-course-finder .cf-weather-credit a {
+  color: var(--heading);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 .dgapi-course-finder .cf-weather-empty,
 .dgapi-course-finder .cf-empty,
 .dgapi-course-finder .cf-status {

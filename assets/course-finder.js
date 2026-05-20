@@ -82,6 +82,10 @@
         .join("&");
     }
 
+    function canadianRegionCodes() {
+      return ["AB", "BC", "MB", "NB", "NL", "NS", "NT", "NU", "ON", "PE", "QC", "SK", "YT"];
+    }
+
     function buildAreaOptions() {
       const configured = parseAreaOptions(finderEl && finderEl.dataset.areaOptions);
       if (configured) {
@@ -102,18 +106,16 @@
       }
 
       if (preset === "wales") {
-        return [{ value: "wales", label: "Wales", query: "country=GB&limit=500", filterRegion: "Wales" }];
+        return [{ value: "wales", label: "Great Britain near Wales", query: "country=GB&limit=500", centerLat: 52.1307, centerLon: -3.7837, centerLabel: "Wales" }];
       }
 
       if (preset === "scotland") {
-        return [{ value: "scotland", label: "Scotland", query: "country=GB&limit=500", filterRegion: "Scotland" }];
+        return [{ value: "scotland", label: "Great Britain near Scotland", query: "country=GB&limit=500", centerLat: 56.4907, centerLon: -4.2026, centerLabel: "Scotland" }];
       }
 
       if (preset === "gb" || country === "GB") {
         return [
           { value: "england", label: "England", query: "country=GB&region=ENG&limit=200" },
-          { value: "wales", label: "Wales", query: "country=GB&limit=500", filterRegion: "Wales" },
-          { value: "scotland", label: "Scotland", query: "country=GB&limit=500", filterRegion: "Scotland" },
           { value: "gb", label: "England, Wales & Scotland", query: "country=GB&limit=500" }
         ];
       }
@@ -123,13 +125,16 @@
       }
 
       if (country) {
-        return [{ value: country.toLowerCase(), label: region ? `${country} ${region}` : country, query: buildQuery({ country, region, limit }) }];
+        return [{
+          value: country.toLowerCase(),
+          label: region ? `${country} ${region}` : countryLabel(country),
+          query: buildQuery({ country, region, limit }),
+          filterRegionCodes: country === "CA" && !region ? canadianRegionCodes() : null
+        }];
       }
 
       return [
         { value: "england", label: "England", query: "country=GB&region=ENG&limit=200" },
-        { value: "wales", label: "Wales", query: "country=GB&limit=500", filterRegion: "Wales" },
-        { value: "scotland", label: "Scotland", query: "country=GB&limit=500", filterRegion: "Scotland" },
         { value: "gb", label: "England, Wales & Scotland", query: "country=GB&limit=500" }
       ];
     }
@@ -206,6 +211,7 @@
     const windSpeedUnit = tidyDataset(finderEl && finderEl.dataset.windSpeedUnit).toLowerCase() === "kph" ? "kmh" : "mph";
     const windSpeedLabel = windSpeedUnit === "kmh" ? "kilometres per hour" : "miles per hour";
     const windSpeedSymbol = windSpeedUnit === "kmh" ? "km/h" : "mph";
+    const weatherTimeFormat = ["12h", "ampm"].includes(tidyDataset(finderEl && finderEl.dataset.weatherTimeFormat).toLowerCase()) ? "12h" : "24h";
     const defaultQuery = tidyDataset(finderEl && finderEl.dataset.defaultQuery);
     const locality = tidyDataset(finderEl && finderEl.dataset.locality);
     const localityMode = tidyDataset(finderEl && finderEl.dataset.localityMode).toLowerCase();
@@ -236,6 +242,8 @@
     ).join("");
     areaMode = findAreaOption(areaMode).value;
     areaEl.value = areaMode;
+    areaEl.hidden = areaOptions.length < 2;
+    areaEl.disabled = areaOptions.length < 2;
     query = defaultQuery || locality;
     searchEl.value = query;
 
@@ -538,7 +546,7 @@
         `?latitude=${encodeURIComponent(course.lat)}` +
         `&longitude=${encodeURIComponent(course.lon)}` +
         `&daily=${daily}` +
-        `&timezone=Europe%2FLondon&forecast_days=${forecastDays}` +
+        `&timezone=auto&forecast_days=${forecastDays}` +
         `&temperature_unit=${encodeURIComponent(temperatureUnit)}` +
         `&wind_speed_unit=${encodeURIComponent(windSpeedUnit)}`;
     }
@@ -673,10 +681,10 @@
         return "n/a";
       }
 
-      return new Intl.DateTimeFormat("en-GB", {
+      return new Intl.DateTimeFormat(weatherTimeFormat === "12h" ? "en-US" : "en-GB", {
         hour: "2-digit",
         minute: "2-digit",
-        hour12: false
+        hour12: weatherTimeFormat === "12h"
       }).format(parsed);
     }
 
@@ -900,6 +908,9 @@
               </div>
             </div>`;
           }).join("")}
+          <div class="cf-weather-credit">
+            <a href="https://open-meteo.com/" target="_blank" rel="noopener">Weather data by Open-Meteo.com</a>
+          </div>
         </div>
       </div>`;
     }
@@ -945,7 +956,7 @@
       const locationSearch = userLocation && locationSearchKey && normaliseSearchKey(query) === locationSearchKey;
       const needle = locationSearch ? "" : query.trim().toLowerCase();
       let list = needle
-        ? courses.filter(course => [course.name, course.town, course.county].join(" ").toLowerCase().includes(needle))
+        ? courses.filter(course => [course.name, course.town, course.county, course.regionName, course.regionCode, course.countryCode].join(" ").toLowerCase().includes(needle))
         : courses.slice();
 
       if (restrictToLocality) {
@@ -1114,6 +1125,16 @@
       return corrections[clean.toLowerCase()] || clean;
     }
 
+    function knownPlaceCoordinates(value) {
+      const places = {
+        england: { lat: 52.3555, lon: -1.1743, label: "England" },
+        scotland: { lat: 56.4907, lon: -4.2026, label: "Scotland" },
+        wales: { lat: 52.1307, lon: -3.7837, label: "Wales" }
+      };
+
+      return places[normaliseSearchKey(value)] || null;
+    }
+
     async function lookupPostcode(postcode) {
       const cleanPostcode = normalisePostcode(postcode);
       const fullPostcode = isFullGbPostcode(cleanPostcode);
@@ -1158,6 +1179,14 @@
       setStatus("Looking up location...");
 
       try {
+        const knownPlace = knownPlaceCoordinates(cleanPlace);
+        if (knownPlace) {
+          setLocation(knownPlace.lat, knownPlace.lon, knownPlace.label, {
+            allowAreaWiden: knownPlace.label !== "England"
+          });
+          return;
+        }
+
         const response = await fetch(`https://api.postcodes.io/places?q=${encodeURIComponent(cleanPlace)}`);
         if (!response.ok) {
           throw new Error("Place not found");
@@ -1250,11 +1279,19 @@
 
         currentPage = 1;
         const areaOption = findAreaOption(areaMode);
+        const hasAreaCenter = Number.isFinite(areaOption.centerLat) && Number.isFinite(areaOption.centerLon);
         courses = payload.courses
           .map(normalizeCourse)
           .filter(course => course.name)
-          .filter(course => !areaOption.filterRegion || course.regionName === areaOption.filterRegion);
-        if (!options.preserveStatus) {
+          .filter(course => !areaOption.filterRegion || course.regionName === areaOption.filterRegion)
+          .filter(course => !Array.isArray(areaOption.filterRegionCodes) || areaOption.filterRegionCodes.includes(course.regionCode));
+        if (hasAreaCenter) {
+          userLocation = { lat: areaOption.centerLat, lon: areaOption.centerLon };
+          locationSearchKey = normaliseSearchKey(query);
+          sort = "distance";
+          sortEl.value = "distance";
+          setStatus(`Showing closest courses to ${areaOption.centerLabel || areaOption.label}.`);
+        } else if (!options.preserveStatus) {
           setStatus("");
         }
       } catch (error) {
@@ -1526,6 +1563,10 @@
 
     render();
     loadCourses().then(loadCourseBadges).then(() => {
+      if (locality && !restrictToLocality && shouldLookupPlace(locality)) {
+        lookupPlace(locality);
+      }
+
       if (autoNearby) {
         useBrowserLocation();
       }

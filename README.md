@@ -2,7 +2,7 @@
 
 Standalone HTML, CSS and JavaScript course finder powered by DiscGolfAPI.
 
-The finder loads live course data from DiscGolfAPI, supports configurable areas, GB and US-state presets, locality modes, pagination, optional course badges, weather forecasts, compact layouts, simple theming and visible DiscGolfAPI attribution.
+The finder loads live course data from DiscGolfAPI, supports configurable course lists, GB and US-state presets, start-search/locality modes, pagination, optional course badges, weather forecasts, compact layouts, simple theming and visible attribution.
 
 ## Quick Start
 
@@ -94,6 +94,7 @@ The API endpoint and UI behaviour can be configured through data attributes on `
   data-forecast-days="7"
   data-temperature-unit="c"
   data-wind-speed-unit="mph"
+  data-weather-time-format="24h"
   data-badges-url="./assets/course-badges.json"
 >
 ```
@@ -101,18 +102,19 @@ The API endpoint and UI behaviour can be configured through data attributes on `
 Supported attributes:
 
 - `data-api-base-url`: DiscGolfAPI courses endpoint.
-- `data-preset`: built-in area preset. Supported values are `gb`, `england`, `scotland`, `wales`, `global` and `us-state`.
-- `data-country`: ISO 3166-1 alpha-2 country code for custom scopes, for example `US`, `GB`, `AU`, `CA`, `FI`, `SE`, `EE`.
-- `data-region`: country-specific region, state or subdivision code. For US states, use values such as `OR`, `CA`, `TX`. For GB nation-level filters, use the built-in `england`, `scotland` or `wales` presets unless you are providing a custom `data-area-options` setup.
-- `data-area-options`: JSON array of selectable areas. Each option needs `value`, `label` and `query`. It can also include `filterRegion` to client-filter the loaded API results by normalized region name, for example `Scotland` or `Wales`.
+- `data-preset`: built-in course list. Supported values are `gb`, `england`, `scotland`, `wales`, `global` and `us-state`.
+- `data-country`: ISO 3166-1 alpha-2 country code for custom country lists, for example `US`, `GB`, `AU`, `CA`, `FI`, `SE`, `EE`.
+- `data-region`: optional country-specific region, state or subdivision code. For US states, use values such as `OR`, `CA`, `TX`. For GB nation-level lists, prefer the built-in `england`, `scotland` or `wales` presets.
+- `data-area-options`: JSON array of selectable areas. Each option needs `value`, `label` and `query`. It can also include `filterRegion` to client-filter the loaded API results by normalized region name when the loaded course data has reliable region names.
 - `data-area-default`: initial selected area value.
 - `data-default-query`: initial search query.
-- `data-locality`: local place name to seed or restrict the finder.
-- `data-locality-mode`: `nearby` allows user-location searches to show courses outside the locality; `restrict` always filters to the locality.
+- `data-locality`: optional town, city, county or local area to pre-fill the search box.
+- `data-locality-mode`: `nearby` treats the locality as a starting point and sorts by nearby courses when a place lookup succeeds; `restrict` keeps results filtered to the locality text.
 - `data-page-size`: number of courses per page. Use `0` or omit it to disable pagination.
 - `data-forecast-days`: weather forecast length, from `0` to `7` days. Use `0` to hide Weather buttons.
 - `data-temperature-unit`: weather temperature unit. Use `c` for Celsius or `f` for Fahrenheit.
 - `data-wind-speed-unit`: weather wind unit. Use `mph` for miles per hour or `kph` for kilometres per hour.
+- `data-weather-time-format`: weather sunrise and sunset time format. Use `24h` for values such as `23:59`, or `12h` / `ampm` for values such as `11:59 PM`.
 - `data-badges-url`: JSON URL for site-owned course badges.
 - `data-auto-nearby`: set to `true` to ask for browser location after courses load.
 - `data-website-only`: set to `true` to show only courses with website links.
@@ -123,7 +125,13 @@ If both `data-area-options` and `data-preset` are present, `data-area-options` w
 
 Remote `data-badges-url` files must be served with browser-readable CORS headers.
 
-The weather layout automatically places forecast cards next to each other when space allows and wraps them onto new rows on narrower screens.
+The weather layout automatically places forecast cards next to each other when space allows and wraps them onto new rows on narrower screens. Weather data is loaded from Open-Meteo. Open-Meteo API data is CC BY 4.0 and their licence requires a link next to displayed weather data; the finder includes a `Weather data by Open-Meteo.com` link inside each open weather panel.
+
+## Course Lists And Places
+
+For most embeds, start with `data-preset` or the configurator's Course list field. Use `data-country` and `data-region` only when you need a custom country or subdivision that is not covered by a preset.
+
+`data-locality` is not the same as `data-region`. A region is part of the API request, such as US state `OR`. A locality is visitor-facing search text, such as `Portland` or `Bristol`, applied after the course list loads. For GB nation pages, prefer the GB list with a locality such as `Scotland` or `Wales`; the current DiscGolfAPI region feed exposes England as `GB/ENG` but does not expose separate `GB/SCT` or `GB/WLS` course lists.
 
 ## Country And Region Codes
 
@@ -152,7 +160,7 @@ Useful examples:
 
 Reference: [ISO 3166-2 subdivision codes](https://www.iso.org/standard/72483.html).
 
-For most embeds, prefer the configurator or built-in presets rather than hand-writing region codes. Region codes are not globally interchangeable: `CA` means California when `data-country="US"`, but Canada when used as a country code. For GB, `england`, `scotland` and `wales` presets are safer than direct region queries because some GB records are inferred client-side from locality and coordinates.
+Prefer the configurator or built-in presets rather than hand-writing region codes. Region codes are not globally interchangeable: `CA` means California when `data-country="US"`, but Canada when used as a country code. For GB, `england`, `scotland` and `wales` presets are safer than direct region queries because some GB records are inferred client-side from locality and coordinates.
 
 For countries not listed above, start with a country-only embed:
 
@@ -168,6 +176,7 @@ Then add a region only after confirming the relevant DiscGolfAPI `region_code` v
 - Host `assets/course-finder.css`, `assets/course-finder.js` and any local badge JSON where the embed paths can reach them.
 - If `data-badges-url` points at another domain, configure CORS on that JSON response.
 - Keep the DiscGolfAPI footer attribution visible.
+- Keep the Open-Meteo weather attribution link visible wherever weather panels are available.
 - Test the configured locality, preset and one weather panel before publishing.
 
 ## Embed Examples
@@ -178,10 +187,10 @@ GB finder:
 <section class="dgapi-course-finder" data-preset="gb" data-area-default="england" data-page-size="15"></section>
 ```
 
-Scotland finder:
+GB list starting near Scotland:
 
 ```html
-<section class="dgapi-course-finder" data-preset="scotland" data-page-size="15"></section>
+<section class="dgapi-course-finder" data-preset="gb" data-area-default="gb" data-locality="Scotland" data-locality-mode="nearby" data-page-size="15"></section>
 ```
 
 Global finder:
