@@ -237,6 +237,44 @@
       border-radius: 0;
     }
 
+    .cfg-preview {
+      overflow: hidden;
+      margin-top: 20px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .cfg-preview-head {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 12px;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-muted);
+    }
+
+    .cfg-preview-title {
+      color: var(--heading);
+      font-weight: 800;
+    }
+
+    .cfg-preview-note {
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .cfg-preview-frame {
+      display: block;
+      width: 100%;
+      height: 720px;
+      border: 0;
+      background: #fff;
+    }
+
     @media (max-width: 760px) {
       main {
         width: min(100% - 20px, 1080px);
@@ -249,6 +287,10 @@
 
       .cfg-header {
         align-items: flex-start;
+      }
+
+      .cfg-preview-frame {
+        height: 760px;
       }
     }
   </style>
@@ -362,6 +404,14 @@
         <textarea id="cfg-code" readonly spellcheck="false"></textarea>
       </section>
     </div>
+
+    <section class="cfg-preview" aria-label="Live preview">
+      <div class="cfg-preview-head">
+        <span class="cfg-preview-title">Live Preview</span>
+        <span class="cfg-preview-note">Updates as you change options. Live course data may take a moment to load. Auto nearby is disabled in preview.</span>
+      </div>
+      <iframe class="cfg-preview-frame" id="cfg-preview" title="Course finder preview"></iframe>
+    </section>
   </main>
 
   <script>
@@ -369,6 +419,8 @@
       const form = document.getElementById("cfg-form");
       const output = document.getElementById("cfg-code");
       const copyButton = document.getElementById("cfg-copy");
+      const preview = document.getElementById("cfg-preview");
+      let previewTimer = 0;
 
       function attr(name, value) {
         if (!String(value || "").trim()) {
@@ -469,6 +521,47 @@
 </section>`;
 
         output.value = `<link rel="stylesheet" href="./assets/course-finder.css">\n${section}\n<script src="./assets/course-finder.js"><\\/script>`;
+        schedulePreview(section);
+      }
+
+      function schedulePreview(section) {
+        window.clearTimeout(previewTimer);
+        previewTimer = window.setTimeout(() => renderPreview(section), 250);
+      }
+
+      function renderPreview(section) {
+        if (!preview) {
+          return;
+        }
+
+        const baseHref = window.location.href.replace(/[^/]*$/, "");
+        const previewSection = section.replace(/\n  data-auto-nearby="true"/, "");
+        preview.srcdoc = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="${baseHref}">
+  <link rel="stylesheet" href="./assets/course-finder.css">
+  <style>
+    body {
+      margin: 0;
+      background: #fff;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      width: min(100% - 24px, 1040px);
+      margin: 16px auto;
+    }
+  </style>
+</head>
+<body>
+  <main>
+${previewSection}
+  </main>
+  <script src="./assets/course-finder.js"><\\/script>
+</body>
+</html>`;
       }
 
       form.addEventListener("change", event => {
