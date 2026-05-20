@@ -1,0 +1,56 @@
+DGAPI Course Finder - License Terms
+
+This repository contains the Course Finder tool powered by DiscGolfAPI.
+
+TERMS OF USE
+
+You can use this tool and code freely in:
+- Websites
+- Apps
+- Maps and directories
+- Tools and dashboards
+
+ATTRIBUTION REQUIREMENT
+
+If you use DiscGolfAPI data via this tool, you must include visible attribution:
+
+"Course data supplied by DiscGolfAPI"
+
+Where possible, include a link to https://discgolfapi.com
+
+Attribution must be:
+- Visible to users
+- Placed near the data
+- Not hidden in metadata only
+
+RESTRICTIONS
+
+You may not:
+- Republish the full DiscGolfAPI dataset as a competing service
+- Misrepresent the data as your own
+- Remove or obscure attribution
+- Use the data in a misleading way
+
+WARRANTY DISCLAIMER
+
+Data is provided as-is. No warranty is given for:
+- Accuracy
+- Completeness
+- Availability
+
+You should verify course details independently before relying on them.
+
+CHANGES
+
+DiscGolfAPI reserves the right to:
+- Update the data structure
+- Change available fields
+- Limit or remove access
+
+COMMERCIAL USE
+
+For commercial use or questions, contact DiscGolfAPI.
+
+---
+
+For full terms, visit: https://discgolfapi.com/license

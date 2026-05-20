@@ -179,6 +179,105 @@ Then add a region only after confirming the relevant DiscGolfAPI `region_code` v
 - Keep the Open-Meteo weather attribution link visible wherever weather panels are available.
 - Test the configured locality, preset and one weather panel before publishing.
 
+## Course Badges
+
+Course badges are optional cosmetic labels shown on each course card. They are completely safe and optional.
+
+### What Are Badges?
+
+Badges are small labels and optional links that appear on course cards. Examples:
+- "Course Badge Partner"
+- "Featured Course"
+- "Verified 2024"
+
+They are **purely cosmetic** — they do not execute code, access data, or affect functionality.
+
+### Security: Hosting Your Own Badges
+
+**Yes, you can absolutely host your own `course-badges.json` file.**
+
+#### How It Works
+
+1. **Default behaviour**: If you don't specify `data-badges-url`, the finder uses built-in badges from `assets/course-badges.json`.
+
+2. **Custom badges**: Point `data-badges-url` to your own JSON file:
+
+```html
+<section class="dgapi-course-finder" data-badges-url="https://example.com/custom-badges.json"></section>
+```
+
+#### JSON Structure
+
+Your `course-badges.json` must follow this structure:
+
+```json
+{
+  "source_url": "https://example.com",
+  "badge_label": "Example Badge Partner",
+  "badge_url": "/partnership/",
+  "courses": [
+    {
+      "id": "crs_your_course_id",
+      "badges": [
+        { "label": "Badge Text" },
+        { "label": "Linked Badge", "url": "/path/" }
+      ]
+    }
+  ]
+}
+```
+
+- `id` or `slug`: Match course identifiers from DiscGolfAPI
+- `label`: Badge text (required)
+- `url`: Optional link target
+
+#### Security Guarantees
+
+- **No code execution**: Badges are data only. No JavaScript or HTML execution.
+- **No external requests**: Badge data doesn't make additional API calls.
+- **No tracking**: Badges don't set cookies or track users.
+- **You control it**: Self-hosted badges are under your complete control.
+
+#### Deployment Requirements
+
+If hosting badges on a different domain than the finder:
+
+1. **Enable CORS headers** on your JSON response:
+
+```
+Access-Control-Allow-Origin: *
+Content-Type: application/json
+```
+
+2. **Use HTTPS** — browsers block mixed content (HTTP badges on HTTPS page).
+
+3. **Valid JSON** — your badges file must be valid JSON. Test with `curl`:
+
+```sh
+curl -i https://example.com/custom-badges.json
+```
+
+#### Recommended Approach for discgolfapi.com
+
+Host badges alongside your other assets:
+
+```
+discgolfapi.com/
+  ├── configurator.html
+  ├── assets/
+  │   ├── course-finder.css
+  │   ├── course-finder.js
+  │   └── course-badges.json  ← self-hosted
+```
+
+Embed code:
+
+```html
+<section class="dgapi-course-finder" data-badges-url="/assets/course-badges.json"></section>
+```
+
+No CORS configuration needed — same-domain requests are always allowed.
+
 ## Embed Examples
 
 GB finder:
