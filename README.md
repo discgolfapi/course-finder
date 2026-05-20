@@ -1,8 +1,23 @@
 # DGAPI Course Finder
 
-Standalone HTML, CSS and JavaScript course finder powered by DiscGolfAPI.
+[![License](https://img.shields.io/badge/license-DGAPI-blue)](LICENSE)
+[![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com/discgolfapi/course-finder)
 
-The finder loads live course data from DiscGolfAPI, supports configurable course lists, GB and US-state presets, start-search/locality modes, pagination, optional course badges, weather forecasts, compact layouts, simple theming and visible attribution.
+A standalone, embeddable disc golf course finder widget powered by [DiscGolfAPI](https://discgolfapi.com). Search and filter courses by region, view course details, check weather forecasts, and customize the appearance to match your site.
+
+## Features
+
+- 🌍 **Live course data** from DiscGolfAPI
+- 🇬🇧 **GB presets** (England, Scotland, Wales) + US state support + global search
+- 📍 **Locality search** with nearby course discovery
+- ⛅ **Weather forecasts** (0-7 days configurable)
+- 🏷️ **Course badges** for partner courses and highlights
+- 🎨 **Themeable** — customize colors to match your brand
+- 📱 **Responsive** — works on mobile, tablet, desktop
+- ⚡ **Lightweight** — ~15KB JavaScript, zero dependencies
+- ♿ **Accessible** — WCAG compliant with proper ARIA labels
+- 🔗 **Embed-friendly** — iframe or inline embed support
+- 📋 **Attribution included** — visible DiscGolfAPI credit
 
 ## Quick Start
 
