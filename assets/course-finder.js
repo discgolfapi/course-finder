@@ -256,23 +256,98 @@
     }
 
     function inferTown(name) {
-      return name.replace(/\s+(Disc Golf Club|Disc Golf Course|Disc Golf|DGC)$/i, "").trim() || "England";
+      return name.replace(/\s+(Disc Golf Club|Disc Golf Course|Disc Golf|DGC)$/i, "").trim() || "Course";
     }
 
-    function regionLabel(regionCode) {
+    function countryLabel(countryCode) {
       const labels = {
-        ENG: "England",
-        WLS: "Wales",
-        SCT: "Scotland"
+        AU: "Australia",
+        CA: "Canada",
+        EE: "Estonia",
+        FI: "Finland",
+        GB: "Great Britain",
+        SE: "Sweden",
+        US: "United States"
       };
 
-      return labels[tidy(regionCode).toUpperCase()] || "Great Britain";
+      return labels[tidy(countryCode).toUpperCase()] || tidy(countryCode).toUpperCase() || "Disc golf";
+    }
+
+    function regionLabel(regionCode, countryCode) {
+      const cleanRegionCode = tidy(regionCode).toUpperCase();
+      const cleanCountryCode = tidy(countryCode).toUpperCase();
+      const labels = {
+        GB: {
+          ENG: "England",
+          WLS: "Wales",
+          SCT: "Scotland"
+        },
+        US: {
+          AL: "Alabama",
+          AK: "Alaska",
+          AZ: "Arizona",
+          AR: "Arkansas",
+          CA: "California",
+          CO: "Colorado",
+          CT: "Connecticut",
+          DE: "Delaware",
+          FL: "Florida",
+          GA: "Georgia",
+          HI: "Hawaii",
+          ID: "Idaho",
+          IL: "Illinois",
+          IN: "Indiana",
+          IA: "Iowa",
+          KS: "Kansas",
+          KY: "Kentucky",
+          LA: "Louisiana",
+          ME: "Maine",
+          MD: "Maryland",
+          MA: "Massachusetts",
+          MI: "Michigan",
+          MN: "Minnesota",
+          MS: "Mississippi",
+          MO: "Missouri",
+          MT: "Montana",
+          NE: "Nebraska",
+          NV: "Nevada",
+          NH: "New Hampshire",
+          NJ: "New Jersey",
+          NM: "New Mexico",
+          NY: "New York",
+          NC: "North Carolina",
+          ND: "North Dakota",
+          OH: "Ohio",
+          OK: "Oklahoma",
+          OR: "Oregon",
+          PA: "Pennsylvania",
+          RI: "Rhode Island",
+          SC: "South Carolina",
+          SD: "South Dakota",
+          TN: "Tennessee",
+          TX: "Texas",
+          UT: "Utah",
+          VT: "Vermont",
+          VA: "Virginia",
+          WA: "Washington",
+          WV: "West Virginia",
+          WI: "Wisconsin",
+          WY: "Wyoming"
+        }
+      };
+
+      return (labels[cleanCountryCode] && labels[cleanCountryCode][cleanRegionCode]) || cleanRegionCode || countryLabel(cleanCountryCode);
     }
 
     function inferredRegionName(course) {
+      const countryCode = tidy(course.country_code).toUpperCase();
       const regionCode = tidy(course.region_code).toUpperCase();
       if (regionCode) {
-        return regionLabel(regionCode);
+        return regionLabel(regionCode, countryCode);
+      }
+
+      if (countryCode && countryCode !== "GB") {
+        return countryLabel(countryCode);
       }
 
       const id = tidy(course.id).toLowerCase();
@@ -299,7 +374,7 @@
         }
       }
 
-      return "Great Britain";
+      return countryLabel(countryCode || "GB");
     }
 
     function normalizeCourse(course) {
@@ -307,6 +382,7 @@
       const locality = tidy(course.locality);
       const parts = splitLocality(locality);
       const regionCode = tidy(course.region_code).toUpperCase();
+      const countryCode = tidy(course.country_code).toUpperCase();
       const regionName = inferredRegionName(course);
 
       return {
@@ -315,6 +391,7 @@
         name,
         town: parts.town || locality || inferTown(name),
         county: parts.county || regionName,
+        countryCode,
         regionCode,
         regionName,
         website: tidy(course.website),
