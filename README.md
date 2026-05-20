@@ -101,10 +101,10 @@ The API endpoint and UI behaviour can be configured through data attributes on `
 Supported attributes:
 
 - `data-api-base-url`: DiscGolfAPI courses endpoint.
-- `data-preset`: built-in area preset. Supported values are `gb`, `global`, `us-state` and `england`.
+- `data-preset`: built-in area preset. Supported values are `gb`, `england`, `scotland`, `wales`, `global` and `us-state`.
 - `data-country`: ISO country code for custom scopes, for example `US`, `GB`, `AU`.
 - `data-region`: region/state code for custom scopes. For US states, use values such as `OR`, `CA`, `TX`.
-- `data-area-options`: JSON array of selectable areas. Each option needs `value`, `label` and `query`.
+- `data-area-options`: JSON array of selectable areas. Each option needs `value`, `label` and `query`. It can also include `filterRegion` to client-filter the loaded API results by normalized region name, for example `Scotland` or `Wales`.
 - `data-area-default`: initial selected area value.
 - `data-default-query`: initial search query.
 - `data-locality`: local place name to seed or restrict the finder.
@@ -139,6 +139,12 @@ GB finder:
 
 ```html
 <section class="dgapi-course-finder" data-preset="gb" data-area-default="england" data-page-size="15"></section>
+```
+
+Scotland finder:
+
+```html
+<section class="dgapi-course-finder" data-preset="scotland" data-page-size="15"></section>
 ```
 
 Global finder:

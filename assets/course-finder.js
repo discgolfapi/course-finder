@@ -49,7 +49,8 @@
           return parsed.map(option => ({
             value: String(option.value || "").trim(),
             label: String(option.label || option.value || "").trim(),
-            query: String(option.query || "").trim()
+            query: String(option.query || "").trim(),
+            filterRegion: String(option.filterRegion || "").trim()
           })).filter(option => option.value && option.label);
         }
       } catch (error) {
@@ -100,9 +101,19 @@
         return [{ value: "england", label: "England", query: "country=GB&region=ENG&limit=200" }];
       }
 
+      if (preset === "wales") {
+        return [{ value: "wales", label: "Wales", query: "country=GB&limit=500", filterRegion: "Wales" }];
+      }
+
+      if (preset === "scotland") {
+        return [{ value: "scotland", label: "Scotland", query: "country=GB&limit=500", filterRegion: "Scotland" }];
+      }
+
       if (preset === "gb" || country === "GB") {
         return [
           { value: "england", label: "England", query: "country=GB&region=ENG&limit=200" },
+          { value: "wales", label: "Wales", query: "country=GB&limit=500", filterRegion: "Wales" },
+          { value: "scotland", label: "Scotland", query: "country=GB&limit=500", filterRegion: "Scotland" },
           { value: "gb", label: "England, Wales & Scotland", query: "country=GB&limit=500" }
         ];
       }
@@ -117,6 +128,8 @@
 
       return [
         { value: "england", label: "England", query: "country=GB&region=ENG&limit=200" },
+        { value: "wales", label: "Wales", query: "country=GB&limit=500", filterRegion: "Wales" },
+        { value: "scotland", label: "Scotland", query: "country=GB&limit=500", filterRegion: "Scotland" },
         { value: "gb", label: "England, Wales & Scotland", query: "country=GB&limit=500" }
       ];
     }
@@ -1236,9 +1249,11 @@
         }
 
         currentPage = 1;
+        const areaOption = findAreaOption(areaMode);
         courses = payload.courses
           .map(normalizeCourse)
-          .filter(course => course.name);
+          .filter(course => course.name)
+          .filter(course => !areaOption.filterRegion || course.regionName === areaOption.filterRegion);
         if (!options.preserveStatus) {
           setStatus("");
         }
@@ -1263,7 +1278,7 @@
       const schema = {
         "@context": "https://schema.org",
         "@type": "ItemList",
-        "name": areaMode === "gb" ? "Disc golf courses in England, Wales and Scotland" : "Disc golf courses in England",
+        "name": `Disc golf courses in ${findAreaOption(areaMode).label}`,
         "itemListElement": courses.map((course, index) => {
           const item = {
             "@type": "SportsActivityLocation",

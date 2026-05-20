@@ -314,6 +314,8 @@
           <select id="cfg-preset" name="preset" title="Required. Choose the broad course list to load.">
             <optgroup label="Popular disc golf regions">
               <option value="popular-gb">GB</option>
+              <option value="popular-scotland">Scotland</option>
+              <option value="popular-wales">Wales</option>
               <option value="popular-us">United States</option>
               <option value="popular-us-or">US Oregon</option>
               <option value="popular-us-ca">US California</option>
@@ -327,6 +329,8 @@
             <optgroup label="General scopes">
               <option value="gb">GB</option>
               <option value="england">England</option>
+              <option value="scotland">Scotland</option>
+              <option value="wales">Wales</option>
               <option value="global">Global</option>
               <option value="us-state">US state</option>
               <option value="custom">Custom country or region</option>
@@ -453,6 +457,8 @@
 
       const popularScopes = {
         "popular-gb": { preset: "gb", country: "GB", region: "" },
+        "popular-scotland": { preset: "scotland", country: "GB", region: "SCT" },
+        "popular-wales": { preset: "wales", country: "GB", region: "WLS" },
         "popular-us": { preset: "custom", country: "US", region: "" },
         "popular-us-or": { preset: "us-state", country: "US", region: "OR" },
         "popular-us-ca": { preset: "us-state", country: "US", region: "CA" },
@@ -483,9 +489,9 @@
         }
 
         const preset = selected;
-        if (preset === "gb" || preset === "england") {
+        if (preset === "gb" || preset === "england" || preset === "scotland" || preset === "wales") {
           form.elements.country.value = "GB";
-          form.elements.region.value = preset === "england" ? "ENG" : "";
+          form.elements.region.value = preset === "england" ? "ENG" : preset === "scotland" ? "SCT" : preset === "wales" ? "WLS" : "";
         }
         if (preset === "global") {
           form.elements.country.value = "";
