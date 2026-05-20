@@ -92,6 +92,8 @@ The API endpoint and UI behaviour can be configured through data attributes on `
   data-area-default="england"
   data-page-size="15"
   data-forecast-days="7"
+  data-temperature-unit="c"
+  data-wind-speed-unit="mph"
   data-badges-url="./assets/course-badges.json"
 >
 ```
@@ -109,6 +111,8 @@ Supported attributes:
 - `data-locality-mode`: `nearby` allows user-location searches to show courses outside the locality; `restrict` always filters to the locality.
 - `data-page-size`: number of courses per page. Use `0` or omit it to disable pagination.
 - `data-forecast-days`: weather forecast length, from `0` to `7` days. Use `0` to hide Weather buttons.
+- `data-temperature-unit`: weather temperature unit. Use `c` for Celsius or `f` for Fahrenheit.
+- `data-wind-speed-unit`: weather wind unit. Use `mph` for miles per hour or `kph` for kilometres per hour.
 - `data-badges-url`: JSON URL for site-owned course badges.
 - `data-auto-nearby`: set to `true` to ask for browser location after courses load.
 - `data-website-only`: set to `true` to show only courses with website links.

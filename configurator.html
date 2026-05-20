@@ -369,6 +369,24 @@
         </div>
 
         <div class="cfg-row">
+          <label for="cfg-temperature-unit">Temperature unit <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Choose Celsius or Fahrenheit for the weather forecast cards.">?</button></label>
+          <select id="cfg-temperature-unit" name="temperatureUnit" title="Optional. Choose Celsius or Fahrenheit for weather.">
+            <option value="c">Celsius (°C)</option>
+            <option value="f">Fahrenheit (°F)</option>
+          </select>
+          <p class="cfg-help">Optional. Controls the temperature values in weather panels.</p>
+        </div>
+
+        <div class="cfg-row">
+          <label for="cfg-wind-speed-unit">Wind speed unit <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Choose miles per hour or kilometres per hour for wind and gust values.">?</button></label>
+          <select id="cfg-wind-speed-unit" name="windSpeedUnit" title="Optional. Choose mph or km/h for wind and gusts.">
+            <option value="mph">Miles per hour (mph)</option>
+            <option value="kph">Kilometres per hour (km/h)</option>
+          </select>
+          <p class="cfg-help">Optional. Controls wind and gust values in weather panels.</p>
+        </div>
+
+        <div class="cfg-row">
           <label for="cfg-page-size">Page size <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Controls how many courses appear per page. Use 0 to disable pagination.">?</button></label>
           <input id="cfg-page-size" name="pageSize" type="number" min="0" max="100" value="15" title="Optional. Courses per page; use 0 to disable pagination.">
           <p class="cfg-help">Optional. Use <code>0</code> to show all matching courses without pagination.</p>
@@ -486,13 +504,15 @@
         const locality = form.elements.locality.value.trim();
         const localityMode = form.elements.localityMode.value;
         const weatherDays = form.elements.weatherDays.value;
+        const temperatureUnit = form.elements.temperatureUnit.value;
+        const windSpeedUnit = form.elements.windSpeedUnit.value;
         const pageSize = form.elements.pageSize.value;
         const primary = form.elements.primary.value;
         const badgesUrl = form.elements.badgesUrl.value.trim();
 
         const section = `<section
   class="dgapi-course-finder"
-  aria-label="Disc golf courses directory"${attr("data-preset", preset)}${attr("data-country", country)}${attr("data-region", region)}${attr("data-locality", locality)}${attr("data-locality-mode", locality ? localityMode : "")}${attr("data-page-size", pageSize)}${attr("data-forecast-days", weatherDays)}${attr("data-theme-primary", primary)}${attr("data-badges-url", badgesUrl)}${checked("autoNearby") ? attr("data-auto-nearby", "true") : ""}${checked("websiteOnly") ? attr("data-website-only", "true") : ""}${checked("compact") ? attr("data-layout", "compact") : ""}
+  aria-label="Disc golf courses directory"${attr("data-preset", preset)}${attr("data-country", country)}${attr("data-region", region)}${attr("data-locality", locality)}${attr("data-locality-mode", locality ? localityMode : "")}${attr("data-page-size", pageSize)}${attr("data-forecast-days", weatherDays)}${attr("data-temperature-unit", temperatureUnit)}${attr("data-wind-speed-unit", windSpeedUnit)}${attr("data-theme-primary", primary)}${attr("data-badges-url", badgesUrl)}${checked("autoNearby") ? attr("data-auto-nearby", "true") : ""}${checked("websiteOnly") ? attr("data-website-only", "true") : ""}${checked("compact") ? attr("data-layout", "compact") : ""}
 >
   <div class="cf-controls">
     <div class="cf-search-wrap">

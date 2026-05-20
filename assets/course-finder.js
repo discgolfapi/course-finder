@@ -187,6 +187,12 @@
     areaMode = defaultAreaMode;
     const pageSize = parseIntInRange(finderEl && finderEl.dataset.pageSize, 1, 100, 0);
     const forecastDays = parseIntInRange(finderEl && finderEl.dataset.forecastDays, 0, 7, 2);
+    const temperatureUnit = tidyDataset(finderEl && finderEl.dataset.temperatureUnit).toLowerCase() === "f" ? "fahrenheit" : "celsius";
+    const temperatureLabel = temperatureUnit === "fahrenheit" ? "degrees Fahrenheit" : "degrees Celsius";
+    const temperatureSymbol = temperatureUnit === "fahrenheit" ? "°F" : "°C";
+    const windSpeedUnit = tidyDataset(finderEl && finderEl.dataset.windSpeedUnit).toLowerCase() === "kph" ? "kmh" : "mph";
+    const windSpeedLabel = windSpeedUnit === "kmh" ? "kilometres per hour" : "miles per hour";
+    const windSpeedSymbol = windSpeedUnit === "kmh" ? "km/h" : "mph";
     const defaultQuery = tidyDataset(finderEl && finderEl.dataset.defaultQuery);
     const locality = tidyDataset(finderEl && finderEl.dataset.locality);
     const localityMode = tidyDataset(finderEl && finderEl.dataset.localityMode).toLowerCase();
@@ -519,7 +525,9 @@
         `?latitude=${encodeURIComponent(course.lat)}` +
         `&longitude=${encodeURIComponent(course.lon)}` +
         `&daily=${daily}` +
-        `&timezone=Europe%2FLondon&forecast_days=${forecastDays}&wind_speed_unit=mph`;
+        `&timezone=Europe%2FLondon&forecast_days=${forecastDays}` +
+        `&temperature_unit=${encodeURIComponent(temperatureUnit)}` +
+        `&wind_speed_unit=${encodeURIComponent(windSpeedUnit)}`;
     }
 
     function weatherSummary(code) {
@@ -836,7 +844,7 @@
             const summary = weatherSummary(day.code);
             const direction = compassDirection(day.windDirection);
             const windArrowClass = windDirectionClass(day.windDirection);
-            return `<div class="cf-weather-card" aria-label="${escapeHtml(formatForecastDate(day.date, index))}: ${escapeHtml(summary)}, high ${Math.round(day.maxTemp)} degrees Celsius, low ${Math.round(day.minTemp)} degrees Celsius">
+            return `<div class="cf-weather-card" aria-label="${escapeHtml(formatForecastDate(day.date, index))}: ${escapeHtml(summary)}, high ${Math.round(day.maxTemp)} ${temperatureLabel}, low ${Math.round(day.minTemp)} ${temperatureLabel}">
               <div class="cf-weather-header">
                 <h3 class="cf-weather-day">${escapeHtml(formatForecastDate(day.date, index))}</h3>
               </div>
@@ -845,19 +853,19 @@
                 <div class="cf-weather-main">
                   ${weatherIconSvg(day.code)}
                   <div>
-                    <strong class="cf-weather-temp">${Math.round(day.maxTemp)}°C</strong>
-                    <div class="cf-weather-low">Low ${Math.round(day.minTemp)}°C</div>
+                    <strong class="cf-weather-temp">${Math.round(day.maxTemp)}${temperatureSymbol}</strong>
+                    <div class="cf-weather-low">Low ${Math.round(day.minTemp)}${temperatureSymbol}</div>
                   </div>
                 </div>
                 <div class="cf-weather-condition">${escapeHtml(summary)}</div>
                 <div class="cf-weather-stat-grid">
-                  <div class="cf-weather-stat" aria-label="Wind speed ${Math.round(day.wind)} miles per hour ${escapeHtml(direction)}">
+                  <div class="cf-weather-stat" aria-label="Wind speed ${Math.round(day.wind)} ${windSpeedLabel} ${escapeHtml(direction)}">
                     ${statIconSvg("wind")}
-                    <div><div class="cf-weather-stat-value"><span class="cf-weather-wind-arrow ${windArrowClass}">↑</span> ${Math.round(day.wind)} mph ${escapeHtml(direction)}</div><div class="cf-weather-stat-label">Wind speed</div></div>
+                    <div><div class="cf-weather-stat-value"><span class="cf-weather-wind-arrow ${windArrowClass}">↑</span> ${Math.round(day.wind)} ${windSpeedSymbol} ${escapeHtml(direction)}</div><div class="cf-weather-stat-label">Wind speed</div></div>
                   </div>
-                  <div class="cf-weather-stat" aria-label="Gusts ${Math.round(day.gusts)} miles per hour">
+                  <div class="cf-weather-stat" aria-label="Gusts ${Math.round(day.gusts)} ${windSpeedLabel}">
                     ${statIconSvg("gust")}
-                    <div><div class="cf-weather-stat-value">${Math.round(day.gusts)} mph</div><div class="cf-weather-stat-label">Gusts</div></div>
+                    <div><div class="cf-weather-stat-value">${Math.round(day.gusts)} ${windSpeedSymbol}</div><div class="cf-weather-stat-label">Gusts</div></div>
                   </div>
                   <div class="cf-weather-stat" aria-label="Rain ${day.rain.toFixed(1)} millimetres, ${Math.round(day.rainProbability)} percent chance">
                     ${statIconSvg("rain")}
