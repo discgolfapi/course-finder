@@ -237,13 +237,27 @@
         <div class="cfg-row">
           <label for="cfg-preset">Scope <span class="cfg-required">required</span> <span class="cfg-tip" title="Choose the broad course list to load before any search or locality filters are applied.">?</span></label>
           <select id="cfg-preset" name="preset" title="Required. Choose the broad course list to load.">
-            <option value="gb">GB</option>
-            <option value="england">England</option>
-            <option value="global">Global</option>
-            <option value="us-state">US state</option>
-            <option value="custom">Custom country or region</option>
+            <optgroup label="Popular disc golf regions">
+              <option value="popular-gb">GB</option>
+              <option value="popular-us">United States</option>
+              <option value="popular-us-or">US Oregon</option>
+              <option value="popular-us-ca">US California</option>
+              <option value="popular-us-tx">US Texas</option>
+              <option value="popular-us-nc">US North Carolina</option>
+              <option value="popular-ca">Canada</option>
+              <option value="popular-fi">Finland</option>
+              <option value="popular-se">Sweden</option>
+              <option value="popular-ee">Estonia</option>
+            </optgroup>
+            <optgroup label="General scopes">
+              <option value="gb">GB</option>
+              <option value="england">England</option>
+              <option value="global">Global</option>
+              <option value="us-state">US state</option>
+              <option value="custom">Custom country or region</option>
+            </optgroup>
           </select>
-          <p class="cfg-help">Required. Use GB for England, Wales and Scotland, or choose a global/custom scope.</p>
+          <p class="cfg-help">Required. Popular choices fill the country and region fields automatically; use custom for another country or region.</p>
         </div>
 
         <div class="cfg-row">
@@ -334,8 +348,38 @@
         return form.elements[name].checked;
       }
 
+      const popularScopes = {
+        "popular-gb": { preset: "gb", country: "GB", region: "" },
+        "popular-us": { preset: "custom", country: "US", region: "" },
+        "popular-us-or": { preset: "us-state", country: "US", region: "OR" },
+        "popular-us-ca": { preset: "us-state", country: "US", region: "CA" },
+        "popular-us-tx": { preset: "us-state", country: "US", region: "TX" },
+        "popular-us-nc": { preset: "us-state", country: "US", region: "NC" },
+        "popular-ca": { preset: "custom", country: "CA", region: "" },
+        "popular-fi": { preset: "custom", country: "FI", region: "" },
+        "popular-se": { preset: "custom", country: "SE", region: "" },
+        "popular-ee": { preset: "custom", country: "EE", region: "" }
+      };
+
+      function selectedScope() {
+        const selected = form.elements.preset.value;
+        return popularScopes[selected] || {
+          preset: selected,
+          country: form.elements.country.value.trim().toUpperCase(),
+          region: form.elements.region.value.trim().toUpperCase()
+        };
+      }
+
       function updateCountryDefaults() {
-        const preset = form.elements.preset.value;
+        const selected = form.elements.preset.value;
+        const popular = popularScopes[selected];
+        if (popular) {
+          form.elements.country.value = popular.country;
+          form.elements.region.value = popular.region;
+          return;
+        }
+
+        const preset = selected;
         if (preset === "gb" || preset === "england") {
           form.elements.country.value = "GB";
           form.elements.region.value = preset === "england" ? "ENG" : "";
@@ -350,9 +394,10 @@
       }
 
       function update() {
-        const preset = form.elements.preset.value;
-        const country = form.elements.country.value.trim().toUpperCase();
-        const region = form.elements.region.value.trim().toUpperCase();
+        const scope = selectedScope();
+        const preset = scope.preset;
+        const country = scope.country;
+        const region = scope.region;
         const locality = form.elements.locality.value.trim();
         const localityMode = form.elements.localityMode.value;
         const weatherDays = form.elements.weatherDays.value;
