@@ -108,7 +108,7 @@ Supported attributes:
 - `data-locality`: local place name to seed or restrict the finder.
 - `data-locality-mode`: `nearby` allows user-location searches to show courses outside the locality; `restrict` always filters to the locality.
 - `data-page-size`: number of courses per page. Use `0` or omit it to disable pagination.
-- `data-forecast-days`: weather forecast length, from `1` to `7` days.
+- `data-forecast-days`: weather forecast length, from `0` to `7` days. Use `0` to hide Weather buttons.
 - `data-badges-url`: JSON URL for site-owned course badges.
 - `data-auto-nearby`: set to `true` to ask for browser location after courses load.
 - `data-website-only`: set to `true` to show only courses with website links.

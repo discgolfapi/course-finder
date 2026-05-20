@@ -186,7 +186,7 @@
     const defaultAreaMode = (finderEl && String(finderEl.dataset.areaDefault || "").trim()) || areaOptions[0].value;
     areaMode = defaultAreaMode;
     const pageSize = parseIntInRange(finderEl && finderEl.dataset.pageSize, 1, 100, 0);
-    const forecastDays = parseIntInRange(finderEl && finderEl.dataset.forecastDays, 1, 7, 2);
+    const forecastDays = parseIntInRange(finderEl && finderEl.dataset.forecastDays, 0, 7, 2);
     const defaultQuery = tidyDataset(finderEl && finderEl.dataset.defaultQuery);
     const locality = tidyDataset(finderEl && finderEl.dataset.locality);
     const localityMode = tidyDataset(finderEl && finderEl.dataset.localityMode).toLowerCase();
@@ -966,9 +966,9 @@
           <div class="cf-links">
             <button class="cf-link secondary" type="button" data-directions-course="${escapeHtml(course.id)}" aria-label="Choose directions app for ${escapeHtml(course.name)}">Directions</button>
             ${course.website ? `<a class="cf-link" href="${escapeHtml(course.website)}" target="_blank" rel="noopener" aria-label="Website for ${escapeHtml(course.name)}">Website</a>` : ""}
-            ${Number.isFinite(course.lat) && Number.isFinite(course.lon) ? `<button class="cf-link secondary" type="button" data-weather-course="${escapeHtml(course.id)}" aria-expanded="${openWeatherCourseId === course.id ? "true" : "false"}" aria-controls="${escapeHtml(weatherId)}" aria-label="Show weather for ${escapeHtml(course.name)}">Weather</button>` : ""}
+            ${forecastDays > 0 && Number.isFinite(course.lat) && Number.isFinite(course.lon) ? `<button class="cf-link secondary" type="button" data-weather-course="${escapeHtml(course.id)}" aria-expanded="${openWeatherCourseId === course.id ? "true" : "false"}" aria-controls="${escapeHtml(weatherId)}" aria-label="Show weather for ${escapeHtml(course.name)}">Weather</button>` : ""}
           </div>
-          ${weatherPanelHtml(course, weatherId)}
+          ${forecastDays > 0 ? weatherPanelHtml(course, weatherId) : ""}
         </article>
       `;
       }).join("")}</div>`;

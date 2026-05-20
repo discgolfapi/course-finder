@@ -321,9 +321,9 @@
         </div>
 
         <div class="cfg-row">
-          <label for="cfg-weather-days">Weather days <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Controls how many forecast days appear when a visitor opens a course weather panel.">?</button></label>
-          <input id="cfg-weather-days" name="weatherDays" type="number" min="1" max="7" value="2" title="Optional. Forecast days, from 1 to 7.">
-          <p class="cfg-help">Optional. Choose between <code>1</code> and <code>7</code>. The layout wraps extra days onto new rows.</p>
+          <label for="cfg-weather-days">Weather days <span class="cfg-optional">optional</span> <button class="cfg-tip" type="button" aria-label="Controls how many forecast days appear when a visitor opens a course weather panel. Use 0 to remove the weather buttons completely.">?</button></label>
+          <input id="cfg-weather-days" name="weatherDays" type="number" min="0" max="7" value="2" title="Optional. Forecast days, from 0 to 7. Use 0 to hide weather buttons.">
+          <p class="cfg-help">Optional. Use <code>0</code> to hide Weather buttons completely, or choose <code>1</code> to <code>7</code> forecast days.</p>
         </div>
 
         <div class="cfg-row">
