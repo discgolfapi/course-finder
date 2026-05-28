@@ -58,6 +58,21 @@ For a manual embed, copy the full `.dgapi-course-finder` section from `index.htm
 <script src="./assets/course-finder.js"></script>
 ```
 
+## Releases & Downloads
+
+Download the latest release from [GitHub Releases](https://github.com/discgolfapi/course-finder/releases/latest):
+
+1. Download `course-finder.js` and `course-finder.css` from the latest release
+2. Place them in your project's `assets/` folder (or a path of your choice)
+3. Include them in your HTML:
+
+```html
+<link rel="stylesheet" href="./assets/course-finder.css">
+<script src="./assets/course-finder.js"></script>
+```
+
+**Recommended approach:** Download the entire release archive which includes all necessary files (`course-finder.js`, `course-finder.css`, `course-badges.json`).
+
 ## Files
 
 - `index.html` contains the required markup.
