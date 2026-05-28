@@ -2,7 +2,7 @@
 
 ## Reporting Security Issues
 
-If you discover a security vulnerability in the DGAPI Course Finder, please email security@discgolfapi.com with:
+If you discover a security vulnerability in the DGAPI Course Finder, please email contact@discgolfapi.com with:
 
 - Description of the vulnerability
 - Steps to reproduce
