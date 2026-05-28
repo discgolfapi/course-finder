@@ -113,6 +113,20 @@
         return [{ value: "scotland", label: "Great Britain near Scotland", query: "country=GB&limit=500", centerLat: 56.4907, centerLon: -4.2026, centerLabel: "Scotland" }];
       }
 
+      if (country === "GB" && region) {
+        if (region === "ENG") {
+          return [{ value: "england", label: "England", query: "country=GB&region=ENG&limit=200" }];
+        }
+
+        if (region === "WLS") {
+          return [{ value: "wales", label: "Wales", query: "country=GB&limit=500", filterRegion: "Wales" }];
+        }
+
+        if (region === "SCT") {
+          return [{ value: "scotland", label: "Scotland", query: "country=GB&limit=500", filterRegion: "Scotland" }];
+        }
+      }
+
       if (preset === "gb" || country === "GB") {
         return [
           { value: "england", label: "England", query: "country=GB&region=ENG&limit=200" },
@@ -1576,6 +1590,6 @@
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", initDgapiCourseFinder);
   } else {
-    initDgapiCourseFinder();
+    Promise.resolve().then(initDgapiCourseFinder);
   }
 }());

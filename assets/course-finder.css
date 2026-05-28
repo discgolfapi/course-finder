@@ -8,7 +8,7 @@
   --heading: #111827;
   --muted: #9ca3af;
   --border: #d7e5f1;
-  --primary: #1e73be;
+  --primary: var(--dgapi-primary, #1e73be);
   --primary-strong: #155a8f;
   --accent: #e7f1fb;
   --danger: #c0392b;
@@ -41,7 +41,7 @@ main {
   --heading: #111827;
   --muted: #9ca3af;
   --border: #d7e5f1;
-  --primary: #1e73be;
+  --primary: var(--dgapi-primary, #1e73be);
   --primary-strong: #155a8f;
   --accent: #e7f1fb;
   --danger: #c0392b;
